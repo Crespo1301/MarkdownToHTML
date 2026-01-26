@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="md2html by Carlos Crespo">
+    <title>Markdown to HTML Converter Demo</title>
+    <style>
+
+/* ========================================
+   md2html Generated Styles
+   Theme: light
+   Author: Carlos Crespo
+   ======================================== */
+
+/* CSS Custom Properties (Variables) */
+:root {
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f6f8fa;
+    --color-bg-tertiary: #f1f3f5;
+    --color-text-primary: #1f2328;
+    --color-text-secondary: #656d76;
+    --color-text-muted: #8b949e;
+    --color-border: #d0d7de;
+    --color-border-light: #e8e8e8;
+    --color-link: #0969da;
+    --color-link-hover: #0550ae;
+    --color-code-bg: #f6f8fa;
+    --color-code-text: #1f2328;
+    --color-blockquote-border: #d0d7de;
+    --color-blockquote-text: #656d76;
+    --color-hr: #d8dee4;
+    --color-toc-bg: #f6f8fa;
+    --color-toc-border: #d0d7de;
+    
+    /* Typography */
+    --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", 
+                        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, 
+                        "Liberation Mono", monospace;
+    --font-size-base: 16px;
+    --line-height-base: 1.6;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Layout */
+    --max-width: 800px;
+    --border-radius: 6px;
+}
+
+/* Reset & Base Styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: var(--font-size-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: var(--spacing-xl);
+    font-family: var(--font-family-base);
+    font-size: 1rem;
+    line-height: var(--line-height-base);
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+}
+
+/* Main Container */
+.markdown-body {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    word-wrap: break-word;
+}
+
+/* Content Area */
+.content {
+    margin-top: var(--spacing-lg);
+}
+
+/* ========== Typography ========== */
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+}
+
+h1 {
+    font-size: 2em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--color-border);
+}
+
+h2 {
+    font-size: 1.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--color-border);
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+h4 {
+    font-size: 1em;
+}
+
+h5 {
+    font-size: 0.875em;
+}
+
+h6 {
+    font-size: 0.85em;
+    color: var(--color-text-secondary);
+}
+
+/* First heading - no top margin */
+.content > h1:first-child,
+.content > h2:first-child,
+.content > h3:first-child {
+    margin-top: 0;
+}
+
+/* Paragraphs */
+p {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Links */
+a {
+    color: var(--color-link);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+}
+
+/* Strong & Emphasis */
+strong, b {
+    font-weight: 600;
+}
+
+em, i {
+    font-style: italic;
+}
+
+/* ========== Code ========== */
+
+/* Inline Code */
+code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    font-family: var(--font-family-mono);
+    background-color: var(--color-code-bg);
+    color: var(--color-code-text);
+    border-radius: var(--border-radius);
+    white-space: break-spaces;
+}
+
+/* Code Blocks */
+pre {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+}
+
+pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    line-height: inherit;
+    word-wrap: normal;
+    background-color: transparent;
+    border: 0;
+    font-size: 100%;
+    white-space: pre;
+}
+
+/* ========== Lists ========== */
+
+ul, ol {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    padding-left: 2em;
+}
+
+ul ul, ul ol, ol ul, ol ol {
+    margin-top: var(--spacing-xs);
+    margin-bottom: 0;
+}
+
+li {
+    margin-bottom: var(--spacing-xs);
+}
+
+li + li {
+    margin-top: var(--spacing-xs);
+}
+
+/* Unordered lists */
+ul {
+    list-style-type: disc;
+}
+
+ul ul {
+    list-style-type: circle;
+}
+
+ul ul ul {
+    list-style-type: square;
+}
+
+/* ========== Blockquotes ========== */
+
+blockquote {
+    margin: 0 0 var(--spacing-md);
+    padding: 0 var(--spacing-md);
+    color: var(--color-blockquote-text);
+    border-left: 0.25em solid var(--color-blockquote-border);
+}
+
+blockquote > :first-child {
+    margin-top: 0;
+}
+
+blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* ========== Horizontal Rules ========== */
+
+hr {
+    height: 0.25em;
+    margin: var(--spacing-xl) 0;
+    padding: 0;
+    background-color: var(--color-hr);
+    border: 0;
+    border-radius: var(--border-radius);
+}
+
+/* ========== Images ========== */
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: var(--spacing-md) 0;
+    border-radius: var(--border-radius);
+}
+
+/* ========== Table of Contents ========== */
+
+.toc {
+    background-color: var(--color-toc-bg);
+    border: 1px solid var(--color-toc-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.toc-title {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.toc-list {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+    list-style-type: none;
+}
+
+.toc-list ul {
+    margin-top: var(--spacing-xs);
+    margin-bottom: 0;
+    padding-left: var(--spacing-md);
+    list-style-type: none;
+}
+
+.toc-list li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.toc-list a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.toc-list a:hover {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+/* ========== Print Styles ========== */
+
+@media print {
+    body {
+        background: white;
+        color: black;
+        padding: 0;
+    }
+    
+    .toc {
+        page-break-after: always;
+    }
+    
+    pre {
+        white-space: pre-wrap;
+        border: 1px solid #ddd;
+    }
+    
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+    
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+    }
+}
+
+/* ========== Responsive Design ========== */
+
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-md);
+    }
+    
+    h1 {
+        font-size: 1.75em;
+    }
+    
+    h2 {
+        font-size: 1.35em;
+    }
+    
+    pre {
+        padding: var(--spacing-sm);
+        font-size: 80%;
+    }
+    
+    .toc {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+}
+
+/* ========== Accessibility ========== */
+
+/* Focus styles for keyboard navigation */
+a:focus,
+button:focus {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --color-border: currentColor;
+        --color-link: blue;
+    }
+}
+
+</style>
+</head>
+<body>
+    <article class="markdown-body">
+        <nav class="toc">
+<h2 class="toc-title">Table of Contents</h2>
+<ul class="toc-list">
+<ul>
+<li><a href="#markdown-to-html-converter-demo">Markdown to HTML Converter Demo</a></li>
+<ul>
+<li><a href="#text-formatting">Text Formatting</a></li>
+<li><a href="#links-and-images">Links and Images</a></li>
+<li><a href="#headers">Headers</a></li>
+<ul>
+<li><a href="#this-is-an-h3">This is an H3</a></li>
+<ul>
+<li><a href="#this-is-an-h4">This is an H4</a></li>
+<ul>
+<li><a href="#this-is-an-h5">This is an H5</a></li>
+<ul>
+<li><a href="#this-is-an-h6">This is an H6</a></li>
+</ul>
+</ul>
+</ul>
+</ul>
+<li><a href="#code">Code</a></li>
+<ul>
+<li><a href="#code-blocks">Code Blocks</a></li>
+</ul>
+<li><a href="#lists">Lists</a></li>
+<ul>
+<li><a href="#unordered-lists">Unordered Lists</a></li>
+<li><a href="#ordered-lists">Ordered Lists</a></li>
+</ul>
+<li><a href="#blockquotes">Blockquotes</a></li>
+<li><a href="#horizontal-rules">Horizontal Rules</a></li>
+<li><a href="#putting-it-all-together">Putting It All Together</a></li>
+</ul>
+</ul>
+</ul>
+</nav>
+        <main class="content">
+            <h1 id="markdown-to-html-converter-demo">Markdown to HTML Converter Demo</h1>
+
+<p>This document demonstrates all the Markdown features supported by the md2html converter.</p>
+
+<h2 id="text-formatting">Text Formatting</h2>
+
+<p>You can make text <strong>bold</strong> using double asterisks or <strong>underscores</strong>.</p>
+
+<p>Text can be <em>italicized</em> with single asterisks or <em>underscores</em>.</p>
+
+<p>For <strong><em>bold and italic</em></strong> together, use triple asterisks or <strong><em>underscores</em></strong>.</p>
+
+<h2 id="links-and-images">Links and Images</h2>
+
+<p>Here's a <a href="https://github.com">link to GitHub</a> for more information.</p>
+
+<p>You can also add a title: <a href="https://google.com" title="Google Search Engine">Visit Google</a></p>
+
+<p>Images work similarly:</p>
+
+<p><img src="https://via.placeholder.com/400x200" alt="Placeholder Image" title="Example Image"></p>
+
+<h2 id="headers">Headers</h2>
+
+<h3 id="this-is-an-h3">This is an H3</h3>
+
+<h4 id="this-is-an-h4">This is an H4</h4>
+
+<h5 id="this-is-an-h5">This is an H5</h5>
+
+<h6 id="this-is-an-h6">This is an H6</h6>
+
+<h2 id="code">Code</h2>
+
+<p>Inline code looks like <code>const greeting = "Hello World";</code> in your text.</p>
+
+<h3 id="code-blocks">Code Blocks</h3>
+
+<p>Here's a JavaScript example:</p>
+
+<pre><code class="language-javascript">function fibonacci(n) {
+    if (n &lt;= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(10)); // Output: 55</code></pre>
+
+<p>And a Python example:</p>
+
+<pre><code class="language-python">def quicksort(arr):
+    &quot;&quot;&quot;Implement quicksort algorithm.&quot;&quot;&quot;
+    if len(arr) &lt;= 1:
+        return arr
+    
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x &lt; pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x &gt; pivot]
+    
+    return quicksort(left) + middle + quicksort(right)</code></pre>
+
+<p>Indented code blocks also work:</p>
+
+<pre><code>This is a code block
+created with 4 spaces
+of indentation</code></pre>
+
+<h2 id="lists">Lists</h2>
+
+<h3 id="unordered-lists">Unordered Lists</h3>
+
+<ul>
+<li>First item</li>
+<li>Second item</li>
+<li>Third item with nested items:</li>
+<ul>
+<li>Nested item A</li>
+<li>Nested item B</li>
+<ul>
+<li>Even deeper nesting</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Fourth item</li>
+</ul>
+
+<h3 id="ordered-lists">Ordered Lists</h3>
+
+<ol>
+<li>First step</li>
+<li>Second step</li>
+<li>Third step</li>
+<li>Fourth step</li>
+</ol>
+
+<h2 id="blockquotes">Blockquotes</h2>
+
+<blockquote>
+<p>This is a blockquote. It can span multiple lines</p>
+<p>and is great for highlighting important information</p>
+<p>or quoting external sources.</p>
+</blockquote>
+
+<h2 id="horizontal-rules">Horizontal Rules</h2>
+
+<p>Here's a horizontal rule:</p>
+
+<hr>
+
+<p>And another style:</p>
+
+<hr>
+
+<h2 id="putting-it-all-together">Putting It All Together</h2>
+
+<p>Here's a practical example combining multiple elements:</p>
+
+<blockquote>
+<p><strong>Pro Tip:</strong> When learning a new programming language, try building small projects like a <strong>markdown converter</strong>! It teaches you:</p>
+<p>1. File I/O operations</p>
+<p>2. String manipulation</p>
+<p>3. Regular expressions</p>
+<p>4. Object-oriented design</p>
+</blockquote>
+
+<p>Check out the <a href="https://github.com/Crespo1301/MarkdownToHTML">project repository</a> for the full source code.</p>
+
+<hr>
+
+<p><em>Generated with md2html by Carlos Crespo</em></p>
+        </main>
+    </article>
+</body>
+</html>
