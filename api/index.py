@@ -1,97 +1,86 @@
 """
-Flask API for Markdown to HTML Converter
-
-Provides web interface and API endpoint for converting
-Markdown to styled HTML.
-
+Vercel Serverless Function for Markdown to HTML Converter
 Author: Carlos Crespo
 """
 
+import json
 import sys
-import os
 from pathlib import Path
+from urllib.parse import parse_qs
 
-# Add src to path for imports (works for both local and Vercel)
-current_dir = Path(__file__).parent.parent
-sys.path.insert(0, str(current_dir / 'src'))
-sys.path.insert(0, str(current_dir))
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
-from flask import Flask, request, jsonify, render_template, send_from_directory
 from md2html.parser import MarkdownParser
 from md2html.converter import HTMLConverter
 from md2html.styles import Theme
 
-app = Flask(
-    __name__,
-    template_folder='../templates',
-    static_folder='../static'
-)
 
-
-@app.route('/')
-def home():
-    """Render the main web interface."""
-    return render_template('index.html')
-
-
-@app.route('/api/convert', methods=['POST'])
-def convert():
-    """
-    API endpoint to convert Markdown to HTML.
+def handler(request):
+    """Handle incoming requests."""
     
-    Expects JSON: {"markdown": "...", "theme": "light|dark", "includeToc": true|false}
-    Returns JSON: {"html": "...", "success": true} or {"error": "...", "success": false}
-    """
-    try:
-        data = request.get_json()
-        
-        if not data or 'markdown' not in data:
-            return jsonify({'error': 'No markdown provided', 'success': False}), 400
-        
-        markdown_text = data.get('markdown', '')
-        theme_name = data.get('theme', 'light')
-        include_toc = data.get('includeToc', True)
-        title = data.get('title', 'Converted Document')
-        fragment_only = data.get('fragmentOnly', False)
-        
-        # Select theme
-        theme = Theme.DARK if theme_name == 'dark' else Theme.LIGHT
-        
-        # Parse and convert
-        parser = MarkdownParser()
-        tokens = parser.parse(markdown_text)
-        headers = parser.get_headers()
-        
-        converter = HTMLConverter(
-            theme=theme,
-            include_toc=include_toc,
-            include_styles=True
-        )
-        
-        if fragment_only:
-            html = converter.convert_fragment(tokens)
-        else:
-            html = converter.convert(tokens, title=title, headers=headers)
-        
-        return jsonify({
-            'html': html,
-            'success': True,
-            'stats': {
-                'headers': len(headers),
-                'tokens': len(tokens)
+    # Serve the homepage
+    if request.method == 'GET':
+        html_path = Path(__file__).parent.parent / 'templates' / 'index.html'
+        with open(html_path, 'r') as f:
+            html = f.read()
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'text/html'},
+            'body': html
+        }
+    
+    # Handle POST requests for conversion
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body)
+            
+            markdown_text = body.get('markdown', '')
+            theme_name = body.get('theme', 'light')
+            include_toc = body.get('includeToc', True)
+            title = body.get('title', 'Converted Document')
+            fragment_only = body.get('fragmentOnly', False)
+            
+            # Select theme
+            theme = Theme.DARK if theme_name == 'dark' else Theme.LIGHT
+            
+            # Parse and convert
+            parser = MarkdownParser()
+            tokens = parser.parse(markdown_text)
+            headers = parser.get_headers()
+            
+            converter = HTMLConverter(
+                theme=theme,
+                include_toc=include_toc,
+                include_styles=True
+            )
+            
+            if fragment_only:
+                html = converter.convert_fragment(tokens)
+            else:
+                html = converter.convert(tokens, title=title, headers=headers)
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json'},
+                'body': json.dumps({
+                    'html': html,
+                    'success': True,
+                    'stats': {
+                        'headers': len(headers),
+                        'tokens': len(tokens)
+                    }
+                })
             }
-        })
-        
-    except Exception as e:
-        return jsonify({'error': str(e), 'success': False}), 500
-
-
-@app.route('/static/<path:filename>')
-def serve_static(filename):
-    """Serve static files."""
-    return send_from_directory(app.static_folder, filename)
-
-
-# Vercel requires this
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+            
+        except Exception as e:
+            return {
+                'statusCode': 500,
+                'headers': {'Content-Type': 'application/json'},
+                'body': json.dumps({'error': str(e), 'success': False})
+            }
+    
+    return {
+        'statusCode': 405,
+        'body': 'Method not allowed'
+    }
