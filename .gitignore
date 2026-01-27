@@ -80,3 +80,4 @@ Thumbs.db
 # Project specific
 output/*.html
 !output/.gitkeep
+.vercel
