@@ -4,6 +4,7 @@ Author: Carlos Crespo
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 from urllib.parse import parse_qs
