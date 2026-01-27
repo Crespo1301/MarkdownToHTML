@@ -37,10 +37,13 @@
             <div class="panel">
                 <div class="panel-header">
                     <h2>Markdown Input</h2>
-                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
+                    <div class="btn-group">
+                        <button id="upload-btn" class="btn btn-secondary">Upload .md</button>
+                        <button id="clear-btn" class="btn btn-secondary">Clear</button>
+                    </div>
+                    <input type="file" id="file-input" accept=".md,.markdown,.txt" style="display:none;">
                 </div>
-                <textarea id="markdown-input" placeholder="Enter your Markdown here...">
-# Welcome to MD2HTML
+                <textarea id="markdown-input" placeholder="Enter your Markdown here..."># Welcome to MD2HTML
 
 This is a **live preview** markdown converter.
 
@@ -67,8 +70,7 @@ def hello():
 
 ---
 
-*Built by Carlos Crespo*
-</textarea>
+*Built by Carlos Crespo*</textarea>
             </div>
 
             <div class="panel">

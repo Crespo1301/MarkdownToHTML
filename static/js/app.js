@@ -1,8 +1,5 @@
 /**
  * Markdown to HTML Converter - Web App
- * 
- * Handles real-time conversion, theme switching, and file operations.
- * 
  * Author: Carlos Crespo
  */
 
@@ -15,6 +12,8 @@ const titleInput = document.getElementById('title-input');
 const clearBtn = document.getElementById('clear-btn');
 const copyBtn = document.getElementById('copy-btn');
 const downloadBtn = document.getElementById('download-btn');
+const uploadBtn = document.getElementById('upload-btn');
+const fileInput = document.getElementById('file-input');
 const toast = document.getElementById('toast');
 
 // State
@@ -41,6 +40,11 @@ async function convertMarkdown() {
     const theme = themeSelect.value;
     const includeToc = tocCheckbox.checked;
     const title = titleInput.value || 'Converted Document';
+
+    if (!markdown.trim()) {
+        updatePreview('<html><body><p style="color:#888;padding:20px;">Enter some Markdown to see the preview...</p></body></html>');
+        return;
+    }
 
     try {
         const response = await fetch('/api/convert', {
@@ -102,7 +106,6 @@ async function copyHtml() {
         await navigator.clipboard.writeText(currentHtml);
         showToast('HTML copied to clipboard!', 'success');
     } catch (error) {
-        // Fallback for older browsers
         const textarea = document.createElement('textarea');
         textarea.value = currentHtml;
         document.body.appendChild(textarea);
@@ -145,8 +148,45 @@ function downloadHtml() {
 function clearEditor() {
     markdownInput.value = '';
     currentHtml = '';
-    updatePreview('');
+    updatePreview('<html><body></body></html>');
     showToast('Editor cleared');
+}
+
+/**
+ * Handle file upload
+ */
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.md') && !file.name.endsWith('.markdown') && !file.name.endsWith('.txt')) {
+        showToast('Please upload a .md, .markdown, or .txt file');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        markdownInput.value = e.target.result;
+        // Set title from filename
+        const baseName = file.name.replace(/\.(md|markdown|txt)$/, '');
+        titleInput.value = baseName;
+        convertMarkdown();
+        showToast('File loaded: ' + file.name, 'success');
+    };
+    reader.onerror = function() {
+        showToast('Error reading file');
+    };
+    reader.readAsText(file);
+    
+    // Reset input so same file can be uploaded again
+    event.target.value = '';
+}
+
+/**
+ * Trigger file input click
+ */
+function triggerUpload() {
+    fileInput.click();
 }
 
 // Event Listeners
@@ -157,30 +197,8 @@ titleInput.addEventListener('input', debouncedConvert);
 clearBtn.addEventListener('click', clearEditor);
 copyBtn.addEventListener('click', copyHtml);
 downloadBtn.addEventListener('click', downloadHtml);
+uploadBtn.addEventListener('click', triggerUpload);
+fileInput.addEventListener('change', handleFileUpload);
 
 // Initial conversion on page load
 document.addEventListener('DOMContentLoaded', convertMarkdown);
-```
-
----
-
-## ✅ Phase 3 Checkpoint
-
-Your project structure should now look like this:
-```
-MarkdownToHTML/
-├── api/
-│   └── index.py
-├── static/
-│   ├── css/
-│   │   └── style.css
-│   └── js/
-│       └── app.js
-├── templates/
-│   └── index.html
-├── src/
-│   └── md2html/
-│       └── ... (existing files)
-├── requirements.txt
-├── vercel.json
-└── ... (other existing files)

@@ -19,8 +19,35 @@ from md2html.styles import Theme
 class handler(BaseHTTPRequestHandler):
     
     def do_GET(self):
-        """Serve the homepage."""
+        """Serve the homepage or static files."""
         try:
+            # Serve static CSS
+            if self.path.startswith('/static/css/'):
+                file_name = self.path.replace('/static/css/', '')
+                css_path = Path(__file__).parent.parent / 'static' / 'css' / file_name
+                if css_path.exists():
+                    with open(css_path, 'r') as f:
+                        content = f.read()
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/css')
+                    self.end_headers()
+                    self.wfile.write(content.encode())
+                    return
+            
+            # Serve static JS
+            if self.path.startswith('/static/js/'):
+                file_name = self.path.replace('/static/js/', '')
+                js_path = Path(__file__).parent.parent / 'static' / 'js' / file_name
+                if js_path.exists():
+                    with open(js_path, 'r') as f:
+                        content = f.read()
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/javascript')
+                    self.end_headers()
+                    self.wfile.write(content.encode())
+                    return
+            
+            # Serve homepage
             html_path = Path(__file__).parent.parent / 'templates' / 'index.html'
             with open(html_path, 'r') as f:
                 html = f.read()
@@ -29,11 +56,12 @@ class handler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'text/html')
             self.end_headers()
             self.wfile.write(html.encode())
+            
         except Exception as e:
             self.send_response(500)
             self.send_header('Content-Type', 'text/plain')
             self.end_headers()
-            self.wfile.write(str(e).encode())
+            self.wfile.write(f'Error: {str(e)}'.encode())
     
     def do_POST(self):
         """Handle markdown conversion."""

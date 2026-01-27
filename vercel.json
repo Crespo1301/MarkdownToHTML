@@ -4,25 +4,17 @@
     {
       "src": "api/index.py",
       "use": "@vercel/python"
-    },
-    {
-      "src": "static/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "templates/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
       "src": "/api/convert",
       "dest": "/api/index.py",
       "methods": ["POST"]
+    },
+    {
+      "src": "/static/(.*)",
+      "dest": "/api/index.py"
     },
     {
       "src": "/(.*)",
