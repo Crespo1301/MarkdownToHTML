@@ -3,11 +3,10 @@ Vercel Serverless Function for Markdown to HTML Converter
 Author: Carlos Crespo
 """
 
+from http.server import BaseHTTPRequestHandler
 import json
-import os
 import sys
 from pathlib import Path
-from urllib.parse import parse_qs
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
@@ -17,35 +16,40 @@ from md2html.converter import HTMLConverter
 from md2html.styles import Theme
 
 
-def handler(request):
-    """Handle incoming requests."""
+class handler(BaseHTTPRequestHandler):
     
-    # Serve the homepage
-    if request.method == 'GET':
-        html_path = Path(__file__).parent.parent / 'templates' / 'index.html'
-        with open(html_path, 'r') as f:
-            html = f.read()
-        return {
-            'statusCode': 200,
-            'headers': {'Content-Type': 'text/html'},
-            'body': html
-        }
-    
-    # Handle POST requests for conversion
-    if request.method == 'POST':
+    def do_GET(self):
+        """Serve the homepage."""
         try:
-            body = json.loads(request.body)
+            html_path = Path(__file__).parent.parent / 'templates' / 'index.html'
+            with open(html_path, 'r') as f:
+                html = f.read()
             
-            markdown_text = body.get('markdown', '')
-            theme_name = body.get('theme', 'light')
-            include_toc = body.get('includeToc', True)
-            title = body.get('title', 'Converted Document')
-            fragment_only = body.get('fragmentOnly', False)
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html')
+            self.end_headers()
+            self.wfile.write(html.encode())
+        except Exception as e:
+            self.send_response(500)
+            self.send_header('Content-Type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(str(e).encode())
+    
+    def do_POST(self):
+        """Handle markdown conversion."""
+        try:
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length)
+            data = json.loads(body)
             
-            # Select theme
+            markdown_text = data.get('markdown', '')
+            theme_name = data.get('theme', 'light')
+            include_toc = data.get('includeToc', True)
+            title = data.get('title', 'Converted Document')
+            fragment_only = data.get('fragmentOnly', False)
+            
             theme = Theme.DARK if theme_name == 'dark' else Theme.LIGHT
             
-            # Parse and convert
             parser = MarkdownParser()
             tokens = parser.parse(markdown_text)
             headers = parser.get_headers()
@@ -61,27 +65,23 @@ def handler(request):
             else:
                 html = converter.convert(tokens, title=title, headers=headers)
             
-            return {
-                'statusCode': 200,
-                'headers': {'Content-Type': 'application/json'},
-                'body': json.dumps({
-                    'html': html,
-                    'success': True,
-                    'stats': {
-                        'headers': len(headers),
-                        'tokens': len(tokens)
-                    }
-                })
-            }
+            response = json.dumps({
+                'html': html,
+                'success': True,
+                'stats': {
+                    'headers': len(headers),
+                    'tokens': len(tokens)
+                }
+            })
+            
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(response.encode())
             
         except Exception as e:
-            return {
-                'statusCode': 500,
-                'headers': {'Content-Type': 'application/json'},
-                'body': json.dumps({'error': str(e), 'success': False})
-            }
-    
-    return {
-        'statusCode': 405,
-        'body': 'Method not allowed'
-    }
+            response = json.dumps({'error': str(e), 'success': False})
+            self.send_response(500)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(response.encode())
