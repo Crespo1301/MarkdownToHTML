@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to HTML Converter</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Markdown to HTML Converter</h1>
+            <p class="subtitle">Convert your Markdown to beautifully styled HTML</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="theme-select">Theme:</label>
+                <select id="theme-select">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="toc-checkbox">
+                    <input type="checkbox" id="toc-checkbox" checked>
+                    Include Table of Contents
+                </label>
+            </div>
+            <div class="control-group">
+                <label for="title-input">Document Title:</label>
+                <input type="text" id="title-input" placeholder="My Document" value="Converted Document">
+            </div>
+        </div>
+
+        <div class="editor-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Markdown Input</h2>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
+                </div>
+                <textarea id="markdown-input" placeholder="Enter your Markdown here...">
+# Welcome to MD2HTML
+
+This is a **live preview** markdown converter.
+
+## Features
+
+- Real-time conversion
+- **Bold** and *italic* text
+- [Links](https://github.com/Crespo1301/MarkdownToHTML)
+- Code blocks with syntax highlighting
+
+## Code Example
+```python
+def hello():
+    print("Hello, World!")
+```
+
+## Lists
+
+1. First item
+2. Second item
+3. Third item
+
+> This is a blockquote. It looks great!
+
+---
+
+*Built by Carlos Crespo*
+</textarea>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>HTML Preview</h2>
+                    <div class="btn-group">
+                        <button id="copy-btn" class="btn btn-secondary">Copy HTML</button>
+                        <button id="download-btn" class="btn btn-primary">Download</button>
+                    </div>
+                </div>
+                <div id="preview-container">
+                    <iframe id="preview-frame" title="HTML Preview"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                Built by <a href="https://carloscrespo.info" target="_blank">Carlos Crespo</a> |
+                <a href="https://github.com/Crespo1301/MarkdownToHTML" target="_blank">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

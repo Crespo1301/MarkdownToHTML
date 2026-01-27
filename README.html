@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="md2html by Carlos Crespo">
+    <title>Markdown to HTML Converter</title>
+    <style>
+
+/* ========================================
+   md2html Generated Styles
+   Theme: light
+   Author: Carlos Crespo
+   ======================================== */
+
+/* CSS Custom Properties (Variables) */
+:root {
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f6f8fa;
+    --color-bg-tertiary: #f1f3f5;
+    --color-text-primary: #1f2328;
+    --color-text-secondary: #656d76;
+    --color-text-muted: #8b949e;
+    --color-border: #d0d7de;
+    --color-border-light: #e8e8e8;
+    --color-link: #0969da;
+    --color-link-hover: #0550ae;
+    --color-code-bg: #f6f8fa;
+    --color-code-text: #1f2328;
+    --color-blockquote-border: #d0d7de;
+    --color-blockquote-text: #656d76;
+    --color-hr: #d8dee4;
+    --color-toc-bg: #f6f8fa;
+    --color-toc-border: #d0d7de;
+    
+    /* Typography */
+    --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", 
+                        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, 
+                        "Liberation Mono", monospace;
+    --font-size-base: 16px;
+    --line-height-base: 1.6;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Layout */
+    --max-width: 800px;
+    --border-radius: 6px;
+}
+
+/* Reset & Base Styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: var(--font-size-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: var(--spacing-xl);
+    font-family: var(--font-family-base);
+    font-size: 1rem;
+    line-height: var(--line-height-base);
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+}
+
+/* Main Container */
+.markdown-body {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    word-wrap: break-word;
+}
+
+/* Content Area */
+.content {
+    margin-top: var(--spacing-lg);
+}
+
+/* ========== Typography ========== */
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+}
+
+h1 {
+    font-size: 2em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--color-border);
+}
+
+h2 {
+    font-size: 1.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--color-border);
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+h4 {
+    font-size: 1em;
+}
+
+h5 {
+    font-size: 0.875em;
+}
+
+h6 {
+    font-size: 0.85em;
+    color: var(--color-text-secondary);
+}
+
+/* First heading - no top margin */
+.content > h1:first-child,
+.content > h2:first-child,
+.content > h3:first-child {
+    margin-top: 0;
+}
+
+/* Paragraphs */
+p {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Links */
+a {
+    color: var(--color-link);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+}
+
+/* Strong & Emphasis */
+strong, b {
+    font-weight: 600;
+}
+
+em, i {
+    font-style: italic;
+}
+
+/* ========== Code ========== */
+
+/* Inline Code */
+code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    font-family: var(--font-family-mono);
+    background-color: var(--color-code-bg);
+    color: var(--color-code-text);
+    border-radius: var(--border-radius);
+    white-space: break-spaces;
+}
+
+/* Code Blocks */
+pre {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+}
+
+pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    line-height: inherit;
+    word-wrap: normal;
+    background-color: transparent;
+    border: 0;
+    font-size: 100%;
+    white-space: pre;
+}
+
+/* ========== Lists ========== */
+
+ul, ol {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    padding-left: 2em;
+}
+
+ul ul, ul ol, ol ul, ol ol {
+    margin-top: var(--spacing-xs);
+    margin-bottom: 0;
+}
+
+li {
+    margin-bottom: var(--spacing-xs);
+}
+
+li + li {
+    margin-top: var(--spacing-xs);
+}
+
+/* Unordered lists */
+ul {
+    list-style-type: disc;
+}
+
+ul ul {
+    list-style-type: circle;
+}
+
+ul ul ul {
+    list-style-type: square;
+}
+
+/* ========== Blockquotes ========== */
+
+blockquote {
+    margin: 0 0 var(--spacing-md);
+    padding: 0 var(--spacing-md);
+    color: var(--color-blockquote-text);
+    border-left: 0.25em solid var(--color-blockquote-border);
+}
+
+blockquote > :first-child {
+    margin-top: 0;
+}
+
+blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* ========== Horizontal Rules ========== */
+
+hr {
+    height: 0.25em;
+    margin: var(--spacing-xl) 0;
+    padding: 0;
+    background-color: var(--color-hr);
+    border: 0;
+    border-radius: var(--border-radius);
+}
+
+/* ========== Images ========== */
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: var(--spacing-md) 0;
+    border-radius: var(--border-radius);
+}
+
+/* ========== Table of Contents ========== */
+
+.toc {
+    background-color: var(--color-toc-bg);
+    border: 1px solid var(--color-toc-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.toc-title {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.toc-list {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+    list-style-type: none;
+}
+
+.toc-list ul {
+    margin-top: var(--spacing-xs);
+    margin-bottom: 0;
+    padding-left: var(--spacing-md);
+    list-style-type: none;
+}
+
+.toc-list li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.toc-list a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.toc-list a:hover {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+/* ========== Print Styles ========== */
+
+@media print {
+    body {
+        background: white;
+        color: black;
+        padding: 0;
+    }
+    
+    .toc {
+        page-break-after: always;
+    }
+    
+    pre {
+        white-space: pre-wrap;
+        border: 1px solid #ddd;
+    }
+    
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+    
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+    }
+}
+
+/* ========== Responsive Design ========== */
+
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-md);
+    }
+    
+    h1 {
+        font-size: 1.75em;
+    }
+    
+    h2 {
+        font-size: 1.35em;
+    }
+    
+    pre {
+        padding: var(--spacing-sm);
+        font-size: 80%;
+    }
+    
+    .toc {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+}
+
+/* ========== Accessibility ========== */
+
+/* Focus styles for keyboard navigation */
+a:focus,
+button:focus {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --color-border: currentColor;
+        --color-link: blue;
+    }
+}
+
+</style>
+</head>
+<body>
+    <article class="markdown-body">
+        <nav class="toc">
+<h2 class="toc-title">Table of Contents</h2>
+<ul class="toc-list">
+<ul>
+<li><a href="#markdown-to-html-converter">Markdown to HTML Converter</a></li>
+<ul>
+<li><a href="#features">Features</a></li>
+<li><a href="#installation">Installation</a></li>
+<ul>
+<li><a href="#from-source-recommended">From Source (Recommended)</a></li>
+<li><a href="#run-without-installing">Run Without Installing</a></li>
+</ul>
+<li><a href="#quick-start">Quick Start</a></li>
+<ul>
+<li><a href="#command-line">Command Line</a></li>
+<li><a href="#python-api">Python API</a></li>
+</ul>
+<li><a href="#supported-markdown-syntax">Supported Markdown Syntax</a></li>
+<ul>
+<li><a href="#headers">Headers</a></li>
+<li><a href="#text-formatting">Text Formatting</a></li>
+<li><a href="#links-and-images">Links and Images</a></li>
+<li><a href="#lists">Lists</a></li>
+<li><a href="#code-blocks">Code Blocks</a></li>
+<li><a href="#blockquotes">Blockquotes</a></li>
+<li><a href="#horizontal-rules">Horizontal Rules</a></li>
+</ul>
+<li><a href="#cli-reference">CLI Reference</a></li>
+<li><a href="#examples">Examples</a></li>
+<ul>
+<li><a href="#basic-conversion">Basic Conversion</a></li>
+<li><a href="#dark-theme-with-custom-title">Dark Theme with Custom Title</a></li>
+<li><a href="#batch-processing">Batch Processing</a></li>
+<li><a href="#html-fragment-for-embedding">HTML Fragment (for embedding)</a></li>
+</ul>
+<li><a href="#project-structure">Project Structure</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#api-reference">API Reference</a></li>
+<ul>
+<li><a href="#markdownparser">MarkdownParser</a></li>
+<li><a href="#htmlconverter">HTMLConverter</a></li>
+<li><a href="#stylemanager">StyleManager</a></li>
+</ul>
+<li><a href="#themes">Themes</a></li>
+<ul>
+<li><a href="#light-theme">Light Theme</a></li>
+<li><a href="#dark-theme">Dark Theme</a></li>
+</ul>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#author">Author</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+</ul>
+</ul>
+</nav>
+        <main class="content">
+            <h1 id="markdown-to-html-converter">Markdown to HTML Converter</h1>
+
+<p><a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+"></a> <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="#testing"><img src="https://img.shields.io/badge/tests-73%20passed-brightgreen.svg" alt="Tests"></a></p>
+
+<p>A lightweight, zero-dependency Python tool for converting Markdown files to beautifully styled HTML with automatic table of contents generation.</p>
+
+<p>![Light Theme Demo]()</p>
+
+<h2 id="features">Features</h2>
+
+<ul>
+<li><strong>Complete Markdown Support</strong>: Headers, bold, italic, links, images, lists, code blocks, blockquotes, and more</li>
+<li><strong>Automatic Table of Contents</strong>: Generated from document headers with anchor links</li>
+<li><strong>Beautiful Themes</strong>: Light and dark themes with GitHub-flavored styling</li>
+<li><strong>CLI Tool</strong>: Easy command-line interface for single and batch conversions</li>
+<li><strong>Python API</strong>: Use as a library in your own projects</li>
+<li><strong>Zero Dependencies</strong>: Pure Python implementation (only pytest for testing)</li>
+<li><strong>Responsive Design</strong>: Mobile-friendly output with print styles</li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+
+<h3 id="from-source-recommended">From Source (Recommended)</h3>
+
+<pre><code class="language-bash"># Clone the repository
+git clone https://github.com/Crespo1301/MarkdownToHTML.git
+cd MarkdownToHTML
+
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install the package
+pip install -e .</code></pre>
+
+<h3 id="run-without-installing">Run Without Installing</h3>
+
+<p>If you prefer not to install, you can run directly:</p>
+
+<pre><code class="language-bash">git clone https://github.com/Crespo1301/MarkdownToHTML.git
+cd MarkdownToHTML
+
+# Run with PYTHONPATH
+PYTHONPATH=src python -m md2html.cli your_file.md</code></pre>
+
+<h2 id="quick-start">Quick Start</h2>
+
+<h3 id="command-line">Command Line</h3>
+
+<pre><code class="language-bash"># Basic conversion
+md2html README.md
+
+# Specify output file
+md2html README.md -o docs/readme.html
+
+# Use dark theme
+md2html README.md --theme dark
+
+# Disable table of contents
+md2html README.md --no-toc
+
+# Batch convert all markdown files
+md2html docs/*.md -d output/</code></pre>
+
+<h3 id="python-api">Python API</h3>
+
+<pre><code class="language-python">from md2html import MarkdownParser, HTMLConverter
+from md2html.styles import Theme
+
+# Parse markdown
+parser = MarkdownParser()
+tokens = parser.parse(&quot;# Hello World\n\nThis is **bold** text.&quot;)
+
+# Convert to HTML
+converter = HTMLConverter(theme=Theme.LIGHT, include_toc=True)
+html = converter.convert(tokens, title=&quot;My Document&quot;)
+
+# Or use the convenience function
+from md2html.converter import convert_markdown_to_html
+
+html = convert_markdown_to_html(
+    &quot;# Title\n\nContent here.&quot;,
+    title=&quot;My Doc&quot;,
+    theme=Theme.DARK,
+    include_toc=True
+)</code></pre>
+
+<h2 id="supported-markdown-syntax">Supported Markdown Syntax</h2>
+
+<h3 id="headers">Headers</h3>
+
+<pre><code class="language-markdown"># H1 Header
+## H2 Header
+### H3 Header
+#### H4 Header
+##### H5 Header
+###### H6 Header</code></pre>
+
+<h3 id="text-formatting">Text Formatting</h3>
+
+<pre><code class="language-markdown">**bold text** or __bold text__
+*italic text* or _italic text_
+***bold and italic*** or ___bold and italic___
+`inline code`</code></pre>
+
+<h3 id="links-and-images">Links and Images</h3>
+
+<pre><code class="language-markdown">[Link Text](https://example.com)
+[Link with Title](https://example.com &quot;Title&quot;)
+
+![Alt Text](image.png)
+![Image with Title](image.png &quot;Title&quot;)</code></pre>
+
+<h3 id="lists">Lists</h3>
+
+<pre><code class="language-markdown">Unordered:
+- Item 1
+- Item 2
+  - Nested item
+- Item 3
+
+Ordered:
+1. First
+2. Second
+3. Third</code></pre>
+
+<h3 id="code-blocks">Code Blocks</h3>
+
+<pre><code class="language-`markdown"></code></pre>
+
+<p>def hello():</p>
+
+<pre><code>print(&quot;Hello, World!&quot;)</code></pre>
+
+<pre><code>
+    # Or indent with 4 spaces
+    code here</code></pre>
+
+<h3 id="blockquotes">Blockquotes</h3>
+
+<pre><code class="language-markdown">&gt; This is a blockquote
+&gt; It can span multiple lines</code></pre>
+
+<h3 id="horizontal-rules">Horizontal Rules</h3>
+
+<pre><code class="language-markdown">---
+***
+___</code></pre>
+
+<h2 id="cli-reference">CLI Reference</h2>
+
+<pre><code>usage: md2html [-h] [-o OUTPUT] [-d OUTPUT_DIR] [-t {light,dark}]
+               [--no-styles] [--minimal-styles] [--no-toc]
+               [--toc-title TOC_TITLE] [--title TITLE] [--fragment]
+               [-v] [-q] [--dry-run]
+               input [input ...]
+
+Convert Markdown files to beautifully styled HTML
+
+positional arguments:
+  input                 Input Markdown file(s) to convert
+
+options:
+  -h, --help            show this help message and exit
+  --fragment            Output HTML fragment without document wrapper
+  -v, --version         show program's version number and exit
+  -q, --quiet           Suppress output messages
+  --dry-run             Show what would be done without creating files
+
+Output Options:
+  -o, --output          Output file path
+  -d, --output-dir      Output directory for batch conversions
+
+Styling Options:
+  -t, --theme           Color theme: light (default) or dark
+  --no-styles           Exclude CSS styles from output
+  --minimal-styles      Use minimal CSS instead of full styles
+
+Content Options:
+  --no-toc              Disable table of contents generation
+  --toc-title           Custom title for table of contents
+  --title               Document title (default: from first h1)</code></pre>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="basic-conversion">Basic Conversion</h3>
+
+<pre><code class="language-bash">md2html article.md
+# Creates: article.html</code></pre>
+
+<h3 id="dark-theme-with-custom-title">Dark Theme with Custom Title</h3>
+
+<pre><code class="language-bash">md2html notes.md -o notes.html --theme dark --title &quot;My Notes&quot;</code></pre>
+
+<h3 id="batch-processing">Batch Processing</h3>
+
+<pre><code class="language-bash"># Convert all markdown files in docs/ to html/
+md2html docs/*.md -d html/</code></pre>
+
+<h3 id="html-fragment-for-embedding">HTML Fragment (for embedding)</h3>
+
+<pre><code class="language-bash">md2html content.md --fragment -o partial.html</code></pre>
+
+<h2 id="project-structure">Project Structure</h2>
+
+<pre><code>markdown-to-html/
+├── src/
+│   └── md2html/
+│       ├── __init__.py      # Package initialization
+│       ├── parser.py        # Markdown parsing engine
+│       ├── converter.py     # HTML generation
+│       ├── styles.py        # CSS themes and styling
+│       └── cli.py           # Command-line interface
+├── tests/
+│   ├── test_parser.py       # Parser unit tests
+│   └── test_converter.py    # Converter unit tests
+├── examples/
+│   ├── demo.md              # Full feature demonstration
+│   └── quickstart.md        # Quick start guide
+├── output/                  # Generated HTML files
+├── pyproject.toml           # Project configuration
+└── README.md</code></pre>
+
+<h2 id="testing">Testing</h2>
+
+<p>Run the test suite:</p>
+
+<pre><code class="language-bash"># Make sure virtual environment is activated
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install test dependencies
+pip install pytest
+
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage report
+pip install pytest-cov
+pytest tests/ --cov=md2html --cov-report=html</code></pre>
+
+<p>Current test coverage: <strong>73 tests passing</strong></p>
+
+<h2 id="api-reference">API Reference</h2>
+
+<h3 id="markdownparser">MarkdownParser</h3>
+
+<pre><code class="language-python">from md2html import MarkdownParser
+
+parser = MarkdownParser()
+tokens = parser.parse(markdown_string)
+headers = parser.get_headers()  # For TOC generation</code></pre>
+
+<h3 id="htmlconverter">HTMLConverter</h3>
+
+<pre><code class="language-python">from md2html import HTMLConverter
+from md2html.styles import Theme
+
+converter = HTMLConverter(
+    theme=Theme.LIGHT,      # or Theme.DARK
+    include_toc=True,       # Generate table of contents
+    toc_title=&quot;Contents&quot;,   # TOC heading
+    include_styles=True     # Embed CSS
+)
+
+# Full document
+html = converter.convert(tokens, title=&quot;My Document&quot;)
+
+# HTML fragment only
+fragment = converter.convert_fragment(tokens)</code></pre>
+
+<h3 id="stylemanager">StyleManager</h3>
+
+<pre><code class="language-python">from md2html import StyleManager
+from md2html.styles import Theme
+
+manager = StyleManager(Theme.DARK)
+css = manager.get_styles()           # Full CSS
+css = manager.get_minimal_styles()   # Lightweight CSS</code></pre>
+
+<h2 id="themes">Themes</h2>
+
+<h3 id="light-theme">Light Theme</h3>
+
+<p>Clean, professional styling with a white background. Ideal for documentation and reading.</p>
+
+<h3 id="dark-theme">Dark Theme</h3>
+
+<p>Eye-friendly dark mode with carefully selected colors. Perfect for developers and night reading.</p>
+
+<h2 id="contributing">Contributing</h2>
+
+<p>Contributions are welcome! Please feel free to submit a Pull Request.</p>
+
+<ol>
+<li>Fork the repository</li>
+<li>Create your feature branch (<code>git checkout -b feature/AmazingFeature</code>)</li>
+<li>Commit your changes (<code>git commit -m 'Add some AmazingFeature'</code>)</li>
+<li>Push to the branch (<code>git push origin feature/AmazingFeature</code>)</li>
+<li>Open a Pull Request</li>
+</ol>
+
+<h2 id="license">License</h2>
+
+<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+
+<h2 id="author">Author</h2>
+
+<p><strong>Carlos Crespo</strong></p>
+
+<ul>
+<li>GitHub: <a href="https://github.com/Crespo1301">@Crespo1301</a></li>
+<li>Portfolio: <a href="https://carloscrespo.info">carloscrespo.info</a></li>
+</ul>
+
+<h2 id="acknowledgments">Acknowledgments</h2>
+
+<ul>
+<li>Inspired by GitHub Flavored Markdown</li>
+<li>Styling influenced by GitHub's markdown rendering</li>
+<li>Built as part of my software engineering portfolio</li>
+</ul>
+
+<hr>
+
+<p><em>Made with ❤️ by Carlos Crespo</em></p>
+        </main>
+    </article>
+</body>
+</html>

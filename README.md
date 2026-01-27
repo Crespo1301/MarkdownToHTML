@@ -6,7 +6,7 @@
 
 A lightweight, zero-dependency Python tool for converting Markdown files to beautifully styled HTML with automatic table of contents generation.
 
-![Light Theme Demo](https://via.placeholder.com/800x400?text=Light+Theme+Preview)
+![Light Theme Demo]()
 
 ## Features
 
