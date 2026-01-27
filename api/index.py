@@ -8,10 +8,13 @@ Author: Carlos Crespo
 """
 
 import sys
+import os
 from pathlib import Path
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
+# Add src to path for imports (works for both local and Vercel)
+current_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(current_dir / 'src'))
+sys.path.insert(0, str(current_dir))
 
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from md2html.parser import MarkdownParser
