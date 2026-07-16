@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "code-review-graph": {
+      "command": "code-review-graph",
+      "args": [
+        "serve",
+        "--repo",
+        "."
+      ]
+    },
+    "stitch": {
+      "command": "bash",
+      "args": [
+        "./scripts/stitch-proxy.sh"
+      ]
+    },
+    "magic": {
+      "command": "bash",
+      "args": [
+        "./scripts/magic-mcp.sh"
+      ]
+    }
+  }
+}

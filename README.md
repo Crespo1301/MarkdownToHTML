@@ -6,6 +6,25 @@
 
 A lightweight, zero-dependency Python tool for converting Markdown files to beautifully styled HTML with automatic table of contents generation.
 
+## Role In The Business
+
+- This repo is one of the public web apps listed in `Portfolio/src/data/projects.ts`.
+- It shows CSolutions can ship real tools, not only marketing sites.
+- It is both a showcase app and a reusable developer utility.
+
+## Shared Docs
+
+- `AGENTS.md`
+- `CLAUDE.md`
+- `AI-WORKFLOW.md`
+- `SECURITY-CHECKLIST.md`
+
+## Workspace Notes
+
+- Keep README behavior claims aligned with the actual CLI and web flows.
+- Treat this repo as a real product surface, not just a code sample.
+- When changing parsing behavior, update tests and examples together.
+
 ![Light Theme Demo]()
 
 ## Features

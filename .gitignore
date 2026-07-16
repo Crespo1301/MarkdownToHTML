@@ -81,3 +81,8 @@ Thumbs.db
 output/*.html
 !output/.gitkeep
 .vercel
+.env.ai.local
+.mcp.json
+.agents/
+.claude/
+*:Zone.Identifier
