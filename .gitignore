@@ -86,3 +86,6 @@ output/*.html
 .agents/
 .claude/
 *:Zone.Identifier
+
+# Local browser QA screenshots
+.visual-checks/
