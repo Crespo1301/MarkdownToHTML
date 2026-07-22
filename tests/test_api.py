@@ -96,6 +96,19 @@ def test_homepage_has_adsense_code_with_matching_csp_nonce(server):
     assert f"'nonce-{nonce_match.group(1)}'" in headers["Content-Security-Policy"]
     assert "ca-pub-9248605150391626" in html
     assert "{{CSP_NONCE}}" not in html
+    assert (
+        '<meta name="google-adsense-account" content="ca-pub-9248605150391626">' in html
+    )
+
+
+@pytest.mark.parametrize("path", ["/", "/about", "/privacy", "/terms", "/support"])
+def test_adsense_verification_meta_tag_present_on_every_public_page(server, path):
+    status, _, payload = request(server, "GET", path)
+    assert status == 200
+    assert (
+        '<meta name="google-adsense-account" content="ca-pub-9248605150391626">'
+        in payload.decode("utf-8")
+    )
 
 
 def test_ads_txt_exposes_authorized_publisher(server):

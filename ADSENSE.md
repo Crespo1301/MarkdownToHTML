@@ -1,8 +1,10 @@
 # Future AdSense activation
 
 The site is connected to AdSense publisher `pub-9248605150391626` for review.
-The account verification script and authorized `ads.txt` entry are live in the
-codebase. Visible ad units remain disabled until Google approves the site.
+The account verification script, the `google-adsense-account` meta tag, and
+the authorized `ads.txt` entry are all live in the codebase — the three
+verification methods Google's dashboard offers. Visible ad units remain
+disabled until Google approves the site.
 
 Loading the verification script before approval is intentional — Google
 requires it on the page to review the site. The CSP that permits it

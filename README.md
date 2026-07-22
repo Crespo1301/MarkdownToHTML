@@ -5,7 +5,7 @@ turning Markdown into an HTML fragment or a complete styled document.
 
 - Production URL: <https://mdtohtmlconverter.com>
 - Vercel project alias: <https://markdown-to-html-iota.vercel.app>
-- Version: `2.1.0`
+- Version: `2.1.1`
 
 ## Web converter
 

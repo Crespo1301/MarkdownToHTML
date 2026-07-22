@@ -2,6 +2,15 @@
 
 All notable changes follow semantic versioning.
 
+## [2.1.1] - 2026-07-22
+
+### AdSense
+
+- Added the `google-adsense-account` verification meta tag to every public
+  page (converter, About, Privacy, Terms, Support), alongside the existing
+  verification script and `ads.txt` entry — the three methods Google's
+  AdSense dashboard offers for site verification.
+
 ## [2.1.0] - 2026-07-22
 
 ### Brand
@@ -96,5 +105,6 @@ All notable changes follow semantic versioning.
 - Removed Flask requirements and tracked generated artifacts.
 - Aligned package, documentation, and release version at 2.0.0.
 
+[2.1.1]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.1
 [2.1.0]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.0
 [2.0.0]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.0.0
