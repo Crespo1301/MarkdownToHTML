@@ -4,6 +4,10 @@ All notable changes follow semantic versioning.
 
 ## [Unreleased]
 
+### Brand
+
+- Applied the CSolutions identity mark to the site header and favicon.
+
 ### AdSense
 
 - Added the verified AdSense publisher script and authorized `ads.txt` entry.

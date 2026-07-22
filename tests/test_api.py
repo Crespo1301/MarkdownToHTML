@@ -97,6 +97,18 @@ def test_ads_txt_exposes_authorized_publisher(server):
     assert payload == b"google.com, pub-9248605150391626, DIRECT, f08c47fec0942fa0\n"
 
 
+def test_csolutions_brand_assets_are_public(server):
+    status, headers, payload = request(server, "GET", "/static/csolutions-mark.png")
+    assert status == 200
+    assert headers["Content-Type"].startswith("image/png")
+    assert payload.startswith(b"\x89PNG\r\n\x1a\n")
+
+    status, headers, payload = request(server, "GET", "/static/favicon.ico")
+    assert status == 200
+    assert headers["Content-Type"].startswith("image/")
+    assert payload.startswith(b"\x00\x00\x01\x00")
+
+
 def test_static_path_traversal_is_rejected(server):
     status, _, _ = request(server, "GET", "/static/%2e%2e/pyproject.toml")
     assert status == 404
