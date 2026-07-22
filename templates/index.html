@@ -53,11 +53,11 @@
         </section>
 
         <section class="panel output-panel" aria-labelledby="output-heading">
-          <header class="panel-header output-header"><div><h2 id="output-heading">Output</h2><div class="tabs" role="tablist" aria-label="Output view"><button id="preview-tab" class="tab active" type="button" role="tab" aria-selected="true" aria-controls="preview-container">Preview</button><button id="source-tab" class="tab" type="button" role="tab" aria-selected="false" aria-controls="source-output">HTML source</button></div></div>
+          <header class="panel-header output-header"><div><h2 id="output-heading">Output</h2><div class="tabs" role="tablist" aria-label="Output view"><button id="preview-tab" class="tab active" type="button" role="tab" aria-selected="true" aria-controls="preview-container" tabindex="0">Preview</button><button id="source-tab" class="tab" type="button" role="tab" aria-selected="false" aria-controls="source-output" tabindex="-1">HTML source</button></div></div>
             <div class="actions"><button type="button" id="copy-btn">Copy HTML</button><button type="button" id="download-btn" class="primary">Download complete HTML</button></div>
           </header>
-          <div id="preview-container" class="output-view"><iframe id="preview-frame" sandbox="" title="Rendered HTML preview"></iframe></div>
-          <pre id="source-output" class="output-view source-view" tabindex="0" hidden><code></code></pre>
+          <div id="preview-container" class="output-view" role="tabpanel" aria-labelledby="preview-tab"><iframe id="preview-frame" sandbox="" title="Rendered HTML preview"></iframe></div>
+          <pre id="source-output" class="output-view source-view" role="tabpanel" aria-labelledby="source-tab" tabindex="0" hidden><code></code></pre>
           <div id="empty-state" class="empty-state">Enter Markdown to create a preview.</div>
         </section>
       </div>

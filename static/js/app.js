@@ -43,6 +43,7 @@ const elements = {
 };
 
 let currentHtml = "";
+let outputIsStale = true;
 let debounceTimer;
 let activeRequest;
 let requestSequence = 0;
@@ -96,7 +97,7 @@ function restoreDraft() {
 }
 
 function setBusy(isBusy) {
-  elements.copy.disabled = isBusy || !currentHtml;
+  elements.copy.disabled = isBusy || outputIsStale || !currentHtml;
   elements.download.disabled = isBusy || !elements.markdown.value.trim();
   elements.markdown.setAttribute("aria-busy", String(isBusy));
 }
@@ -119,12 +120,25 @@ async function requestConversion(fragmentOnly, signal) {
   return data.html;
 }
 
+function invalidateOutput() {
+  // Runs synchronously on every keystroke, so it must stay cheap: no
+  // full-document stats recomputation or localStorage writes here. It
+  // exists purely to stop Copy/Download from ever handing out HTML that
+  // no longer matches the current editor contents during the debounce
+  // window or an in-flight request.
+  outputIsStale = true;
+  ++requestSequence;
+  elements.copy.disabled = true;
+}
+
 async function convertMarkdown() {
-  saveDraft();
   updateStats();
+  saveDraft();
   if (!elements.markdown.value.trim()) {
     if (activeRequest) activeRequest.abort();
+    ++requestSequence;
     currentHtml = "";
+    outputIsStale = true;
     elements.iframe.srcdoc = "";
     elements.sourceCode.textContent = "";
     elements.empty.hidden = false;
@@ -135,6 +149,7 @@ async function convertMarkdown() {
 
   if (activeRequest) activeRequest.abort();
   activeRequest = new AbortController();
+  outputIsStale = true;
   const sequence = ++requestSequence;
   setBusy(true);
   announce("Converting…");
@@ -142,6 +157,7 @@ async function convertMarkdown() {
     const html = await requestConversion(elements.output.value === "fragment", activeRequest.signal);
     if (sequence !== requestSequence) return;
     currentHtml = html;
+    outputIsStale = false;
     elements.iframe.srcdoc = html;
     elements.sourceCode.textContent = html;
     elements.empty.hidden = true;
@@ -156,13 +172,17 @@ async function convertMarkdown() {
 
 function scheduleConversion() {
   window.clearTimeout(debounceTimer);
-  updateStats();
-  saveDraft();
+  invalidateOutput();
   announce("Waiting for input…");
   debounceTimer = window.setTimeout(convertMarkdown, 450);
 }
 
-function showView(view) {
+const TABS = [
+  { button: elements.previewTab, panel: elements.preview },
+  { button: elements.sourceTab, panel: elements.source },
+];
+
+function showView(view, focusTab = false) {
   const sourceVisible = view === "source";
   elements.preview.hidden = sourceVisible;
   elements.source.hidden = !sourceVisible;
@@ -170,10 +190,33 @@ function showView(view) {
   elements.sourceTab.classList.toggle("active", sourceVisible);
   elements.previewTab.setAttribute("aria-selected", String(!sourceVisible));
   elements.sourceTab.setAttribute("aria-selected", String(sourceVisible));
+  // Roving tabindex: only the active tab is a Tab-key stop; the inactive
+  // tab is reachable with arrow keys once the tablist has focus.
+  elements.previewTab.tabIndex = sourceVisible ? -1 : 0;
+  elements.sourceTab.tabIndex = sourceVisible ? 0 : -1;
+  if (focusTab) (sourceVisible ? elements.sourceTab : elements.previewTab).focus();
+}
+
+function handleTabKeydown(event) {
+  const currentIndex = TABS.findIndex((tab) => tab.button === event.currentTarget);
+  let targetIndex = null;
+  if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+    targetIndex = (currentIndex + 1) % TABS.length;
+  } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+    targetIndex = (currentIndex - 1 + TABS.length) % TABS.length;
+  } else if (event.key === "Home") {
+    targetIndex = 0;
+  } else if (event.key === "End") {
+    targetIndex = TABS.length - 1;
+  } else {
+    return;
+  }
+  event.preventDefault();
+  showView(TABS[targetIndex].button === elements.sourceTab ? "source" : "preview", true);
 }
 
 async function copyHtml() {
-  if (!currentHtml) return;
+  if (!currentHtml || outputIsStale) return;
   try {
     await navigator.clipboard.writeText(currentHtml);
   } catch (_error) {
@@ -192,7 +235,10 @@ async function downloadHtml() {
   elements.download.disabled = true;
   announce("Preparing complete document…");
   try {
-    const html = elements.output.value === "document" ? currentHtml : await requestConversion(false);
+    const html =
+      elements.output.value === "document" && !outputIsStale
+        ? currentHtml
+        : await requestConversion(false);
     const filename = (elements.title.value || "converted-document").toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-|-$/gu, "") || "converted-document";
     const url = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
     const link = document.createElement("a");
@@ -250,6 +296,8 @@ elements.copy.addEventListener("click", copyHtml);
 elements.download.addEventListener("click", downloadHtml);
 elements.previewTab.addEventListener("click", () => showView("preview"));
 elements.sourceTab.addEventListener("click", () => showView("source"));
+elements.previewTab.addEventListener("keydown", handleTabKeydown);
+elements.sourceTab.addEventListener("keydown", handleTabKeydown);
 
 restoreDraft();
 updateStats();

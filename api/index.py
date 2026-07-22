@@ -5,6 +5,7 @@ import json
 import mimetypes
 from pathlib import Path
 import secrets
+import signal
 import sys
 from urllib.parse import unquote, urlsplit
 
@@ -18,6 +19,25 @@ from md2html.styles import Theme
 MAX_REQUEST_BYTES = 1_000_000
 MAX_MARKDOWN_CHARS = 750_000
 MAX_TITLE_CHARS = 200
+
+# Hard wall-clock budget for a single conversion. The parser's emphasis
+# regexes are bounded (see MarkdownParser.MAX_EMPHASIS_SPAN) so a
+# 750,000-character adversarial document now converts in a few seconds
+# instead of the 10+ seconds it previously took, but this alarm-based
+# ceiling is a backstop against any pathological pattern that bound
+# doesn't anticipate, so one malformed request can't monopolize the
+# serverless invocation.
+CONVERT_TIMEOUT_SECONDS = 8
+
+
+class ConversionTimeout(Exception):
+    """Raised when parsing/conversion exceeds the wall-clock budget."""
+
+
+def _raise_conversion_timeout(signum, frame):
+    raise ConversionTimeout("Conversion took too long.")
+
+
 SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
@@ -31,12 +51,30 @@ DEFAULT_CSP = (
     "script-src 'self'; connect-src 'self'; font-src 'self'; upgrade-insecure-requests"
 )
 
+# Narrowed to the specific Google AdSense hosts that the account
+# verification script and (once approved) ad rendering require, rather than
+# a blanket `https:`. `'strict-dynamic'` plus the nonce is the primary
+# control in CSP2+ browsers; the explicit host list and `'unsafe-inline'`
+# are graceful fallbacks for older browsers that ignore `'strict-dynamic'`
+# (those browsers also ignore `'unsafe-inline'` once a nonce is present).
+# Deliberately omits `'unsafe-eval'`, `http:`, and unrestricted `data:`/
+# `blob:` sources present in the previous policy: no script on this site
+# currently needs them, and they widen the exploitable surface if an
+# injection bug is ever found. Revisit if live ad creatives require eval
+# once AdSense approves the site (see ADSENSE.md).
 ADSENSE_CSP = (
-    "default-src 'self' https: data: blob:; base-uri 'none'; object-src 'none'; "
+    "default-src 'self'; base-uri 'none'; object-src 'none'; "
     "frame-ancestors 'none'; form-action 'self'; "
-    "script-src 'nonce-{nonce}' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' https: http:; "
-    "style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; "
-    "connect-src 'self' https:; frame-src https:; font-src 'self' https: data:; "
+    "script-src 'nonce-{nonce}' 'strict-dynamic' 'unsafe-inline' "
+    "https://pagead2.googlesyndication.com https://adservice.google.com "
+    "https://www.googletagservices.com https://partner.googleadservices.com; "
+    "style-src 'self' 'unsafe-inline'; "
+    "img-src 'self' data: https://pagead2.googlesyndication.com "
+    "https://tpc.googlesyndication.com https://*.google.com; "
+    "connect-src 'self' https://pagead2.googlesyndication.com https://*.google.com; "
+    "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com "
+    "https://www.google.com; "
+    "font-src 'self'; "
     "upgrade-insecure-requests"
 )
 
@@ -72,7 +110,7 @@ def convert_payload(data):
         include_styles=True,
     )
     output = (
-        converter.convert_fragment(tokens)
+        converter.convert_fragment(tokens, headers=headers)
         if fragment_only
         else converter.convert(tokens, title=title, headers=headers)
     )
@@ -86,7 +124,9 @@ def convert_payload(data):
 class handler(BaseHTTPRequestHandler):
     """Serve public pages, static assets, and the conversion API."""
 
-    def _send_headers(self, status, content_type, length, cache_control, csp=DEFAULT_CSP):
+    def _send_headers(
+        self, status, content_type, length, cache_control, csp=DEFAULT_CSP
+    ):
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(length))
@@ -117,18 +157,31 @@ class handler(BaseHTTPRequestHandler):
             "no-store",
         )
 
-    def _serve_file(self, path, content_type=None, cache_control="public, max-age=3600"):
+    def _serve_file(
+        self, path, content_type=None, cache_control="public, max-age=3600"
+    ):
         try:
             payload = path.read_bytes()
         except OSError:
             self._serve_404()
             return
-        guessed = content_type or mimetypes.guess_type(path.name)[0] or "application/octet-stream"
-        if guessed.startswith("text/") or guessed in {"application/javascript", "application/xml"}:
+        guessed = (
+            content_type
+            or mimetypes.guess_type(path.name)[0]
+            or "application/octet-stream"
+        )
+        if guessed.startswith("text/") or guessed in {
+            "application/javascript",
+            "application/xml",
+        }:
             guessed += "; charset=utf-8"
-        self._send(status=200, body=payload, content_type=guessed, cache_control=cache_control)
+        self._send(
+            status=200, body=payload, content_type=guessed, cache_control=cache_control
+        )
 
-    def _serve_html(self, path, status=200, cache_control="public, max-age=0, must-revalidate"):
+    def _serve_html(
+        self, path, status=200, cache_control="public, max-age=0, must-revalidate"
+    ):
         try:
             template = path.read_text(encoding="utf-8")
         except OSError:
@@ -147,20 +200,36 @@ class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = urlsplit(self.path).path
         if path == "/robots.txt":
-            self._serve_file(ROOT / "static" / "robots.txt", "text/plain", "public, max-age=3600")
+            self._serve_file(
+                ROOT / "static" / "robots.txt", "text/plain", "public, max-age=3600"
+            )
             return
         if path == "/sitemap.xml":
-            self._serve_file(ROOT / "static" / "sitemap.xml", "application/xml", "public, max-age=3600")
+            self._serve_file(
+                ROOT / "static" / "sitemap.xml",
+                "application/xml",
+                "public, max-age=3600",
+            )
             return
         if path == "/ads.txt":
-            self._serve_file(ROOT / "static" / "ads.txt", "text/plain", "public, max-age=3600")
+            self._serve_file(
+                ROOT / "static" / "ads.txt", "text/plain", "public, max-age=3600"
+            )
             return
         if path.startswith("/static/"):
             relative = Path(unquote(path.removeprefix("/static/")))
             static_root = (ROOT / "static").resolve()
             candidate = (static_root / relative).resolve()
-            if relative.is_absolute() or not candidate.is_relative_to(static_root) or not candidate.is_file():
-                self._serve_html(ROOT / "templates" / "404.html", status=404, cache_control="no-store")
+            if (
+                relative.is_absolute()
+                or not candidate.is_relative_to(static_root)
+                or not candidate.is_file()
+            ):
+                self._serve_html(
+                    ROOT / "templates" / "404.html",
+                    status=404,
+                    cache_control="no-store",
+                )
                 return
             self._serve_file(candidate)
             return
@@ -176,7 +245,9 @@ class handler(BaseHTTPRequestHandler):
         if template:
             self._serve_html(ROOT / "templates" / template)
             return
-        self._serve_html(ROOT / "templates" / "404.html", status=404, cache_control="no-store")
+        self._serve_html(
+            ROOT / "templates" / "404.html", status=404, cache_control="no-store"
+        )
 
     def do_HEAD(self):
         self.do_GET()
@@ -185,9 +256,14 @@ class handler(BaseHTTPRequestHandler):
         if urlsplit(self.path).path != "/api/convert":
             self._json(404, {"success": False, "error": "Not found."})
             return
-        content_type = self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
+        content_type = (
+            self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
+        )
         if content_type != "application/json":
-            self._json(415, {"success": False, "error": "Content-Type must be application/json."})
+            self._json(
+                415,
+                {"success": False, "error": "Content-Type must be application/json."},
+            )
             return
         try:
             content_length = int(self.headers.get("Content-Length", "0"))
@@ -203,9 +279,15 @@ class handler(BaseHTTPRequestHandler):
         try:
             raw_body = self.rfile.read(content_length)
             data = json.loads(raw_body.decode("utf-8"))
-            result = convert_payload(data)
+            result = self._convert_with_timeout(data)
         except (json.JSONDecodeError, UnicodeDecodeError):
-            self._json(400, {"success": False, "error": "Request body must contain valid UTF-8 JSON."})
+            self._json(
+                400,
+                {
+                    "success": False,
+                    "error": "Request body must contain valid UTF-8 JSON.",
+                },
+            )
             return
         except OverflowError as exc:
             self._json(413, {"success": False, "error": str(exc)})
@@ -213,10 +295,46 @@ class handler(BaseHTTPRequestHandler):
         except ValueError as exc:
             self._json(400, {"success": False, "error": str(exc)})
             return
+        except ConversionTimeout:
+            self._json(
+                503,
+                {
+                    "success": False,
+                    "error": "This document was too complex to convert in time. "
+                    "Try simplifying or shortening it.",
+                },
+            )
+            return
         except Exception:
-            self._json(500, {"success": False, "error": "Conversion failed. Please try again."})
+            self._json(
+                500, {"success": False, "error": "Conversion failed. Please try again."}
+            )
             return
         self._json(200, result)
+
+    def _convert_with_timeout(self, data):
+        """Run convert_payload with a wall-clock ceiling where possible.
+
+        `signal.alarm` only works on the process's main thread on Unix, so
+        this degrades to unprotected conversion (still bounded by the
+        regex fix) when called from a worker thread, such as the threaded
+        HTTPServer used in tests. This is safe for Vercel's Python runtime,
+        which handles one request per invocation on the main thread; it
+        would need revisiting if this handler were ever run behind a
+        multi-threaded WSGI-style server instead.
+        """
+        if not hasattr(signal, "SIGALRM"):
+            return convert_payload(data)
+        try:
+            previous_handler = signal.signal(signal.SIGALRM, _raise_conversion_timeout)
+        except ValueError:
+            return convert_payload(data)
+        signal.alarm(CONVERT_TIMEOUT_SECONDS)
+        try:
+            return convert_payload(data)
+        finally:
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, previous_handler)
 
     def do_PUT(self):
         self._json(405, {"success": False, "error": "Method not allowed."})

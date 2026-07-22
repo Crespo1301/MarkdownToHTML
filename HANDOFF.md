@@ -2,12 +2,43 @@
 
 ## Release
 
-- Target: `v2.0.0`
-- Canonical origin in code: `https://mdtohtmlconverter.com`
+- Current: `v2.1.0` — functionality, security, accessibility, and content
+  pass on top of the live production converter.
+- Canonical origin in code: `https://mdtohtmlconverter.com` (live)
 - Existing Vercel project: `markdown-to-html`
 - Existing production alias: `https://markdown-to-html-iota.vercel.app`
 
-## Decisions
+## v2.1.0 decisions
+
+- Bounded the emphasis regexes (`MarkdownParser.MAX_EMPHASIS_SPAN = 200`)
+  rather than switching to a different parsing library, to fix the ReDoS
+  while keeping the zero-runtime-dependency parser. Tradeoff: emphasized
+  spans longer than 200 characters render as literal `**`/`*` text.
+  Documented in README under "Parser limits and abuse protection".
+  The senior review pass suggested raising this to ~2000, citing a
+  measured 0.24s parse time at that cap; re-measured directly in a fresh
+  process against the same 750,000-character adversarial input and got
+  17.8s at cap 2000, 9.7s at cap 1000, and 4.9s at cap 500 — all confirming
+  the expected roughly-linear-in-cap cost and contradicting the cited
+  figure. Kept the cap at 200 (~2.1s worst case, verified reproducible)
+  rather than reintroducing a multi-second parse on adversarial input.
+- Added an 8-second wall-clock guard (`signal.alarm`) around conversion as
+  defense-in-depth, not as the primary fix — it degrades gracefully (no-op)
+  under the threaded test server, where `signal.alarm` isn't usable.
+- Chose to make fragment mode support the table of contents (rather than
+  disabling the "Include table of contents" checkbox in fragment mode),
+  since a working fragment TOC is more useful for CMS embedding than an
+  extra disabled-state UI branch.
+- Narrowed the AdSense CSP to specific Google hosts using a third-party
+  reference guide (no official Google page was reachable to verify against
+  during this pass — see ADSENSE.md). Revisit against Google's current
+  guidance before widening it for live ad creatives.
+- Deferred the "Editor / Preview / Source mode switch" mobile redesign
+  suggested for a heavier design pass — the current stacked layout is
+  functional and accessible at 360-390px, but a single-pane mode switch
+  would meaningfully speed up the mobile workflow. Tracked as fast-follow.
+
+## v2.0.0 decisions
 
 - Preserve the zero-runtime-dependency parser and CLI rather than introducing a
   large parsing dependency in this release.
@@ -19,10 +50,13 @@
 - Treat Copy HTML as the selected output mode. Download always produces a
   complete styled document.
 
-## Domain launch checklist
+## Domain launch (complete)
 
-Do not copy generic DNS values. Add both domains in Vercel first, then use the
-exact records Vercel displays for this project.
+`mdtohtmlconverter.com` is live in production: HTTP redirects to HTTPS, `www`
+redirects once to the apex, and canonical tags, Open Graph URLs,
+`robots.txt`, and `sitemap.xml` all use `https://mdtohtmlconverter.com`. The
+steps below are kept for reference (e.g. re-pointing DNS after a registrar
+change), not as pending work.
 
 1. Buy `mdtohtmlconverter.com` in Porkbun.
 2. In Vercel, open project `markdown-to-html`, then Settings, Domains.
@@ -38,8 +72,12 @@ exact records Vercel displays for this project.
    `https://mdtohtmlconverter.com`.
 9. Add a Domain property in Google Search Console. Copy Google's exact DNS TXT
    verification value into Porkbun, verify ownership, then submit
-   `https://mdtohtmlconverter.com/sitemap.xml`.
+   `https://mdtohtmlconverter.com/sitemap.xml`. **Still open** — confirm this
+   has actually been done; it is not verifiable from the codebase.
 10. Update the Portfolio project URL only after the custom domain serves the
-    production deployment successfully.
+    production deployment successfully. Done — see
+    `/home/cresp3/Portfolio/src/data/projects.ts`.
 11. Apply for AdSense only after the domain, content, legal pages, and support
-    navigation are live. Follow `ADSENSE.md` after approval.
+    navigation are live. Follow `ADSENSE.md` after approval. **Still open** —
+    site is submitted for review; visible ad units remain disabled pending
+    Google's approval.

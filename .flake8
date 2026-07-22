@@ -1,0 +1,14 @@
+[flake8]
+# Vanilla flake8 does not read [tool.flake8] from pyproject.toml (that
+# requires the flake8-pyproject plugin, which this project does not
+# depend on). This file is what actually configures flake8; keep it in
+# sync with pyproject.toml's [tool.flake8] table.
+max-line-length = 88
+extend-ignore = E203, W503
+# Tests and the Vercel entry point deliberately insert onto sys.path
+# before importing the local package, which flake8 otherwise flags as
+# "module level import not at top of file".
+per-file-ignores =
+    api/index.py: E402
+    tests/*.py: E402
+exclude = venv,.git,__pycache__,build,dist,*.egg-info,output,.agents,.claude,.codex

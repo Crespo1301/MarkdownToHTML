@@ -2,7 +2,7 @@
 
 All notable changes follow semantic versioning.
 
-## [Unreleased]
+## [2.1.0] - 2026-07-22
 
 ### Brand
 
@@ -12,9 +12,61 @@ All notable changes follow semantic versioning.
 
 - Added the verified AdSense publisher script and authorized `ads.txt` entry.
 - Added nonce-based strict CSP handling for AdSense without removing framing,
-  base URI, object, or upgrade protections.
+  base URI, object, or upgrade protections (further narrowed below).
 - Updated the privacy disclosure while keeping visible ad placements disabled
   until site approval.
+
+### Security
+
+- Fixed a ReDoS (catastrophic backtracking) vulnerability in the bold/italic
+  regexes: a 750,000-character adversarial payload of unmatched `*`/`_`
+  characters previously took 10+ seconds to parse; emphasis spans are now
+  bounded to 200 characters, bringing worst-case parse time down to a few
+  seconds.
+- Added an 8-second wall-clock timeout around every `/api/convert` request
+  as a backstop against any pathological input the length/span bounds don't
+  anticipate, returning a `503` instead of tying up the invocation.
+- Narrowed the AdSense CSP from a blanket `https:`/`http:` allowance to the
+  specific Google ad-serving hosts required, and removed `'unsafe-eval'`.
+- Protected inline code spans from later bold/italic reprocessing, so
+  `` `**not bold**` `` renders literally instead of as `<strong>`.
+
+### Fixed
+
+- Copy HTML and Download no longer hand out stale output: the editor
+  invalidates the previous conversion immediately on input instead of only
+  after the 450ms debounce settles.
+- Hard line breaks (two trailing spaces) are preserved again; a prior
+  paragraph-joining bug silently dropped them.
+- Duplicate headings now get unique `id` attributes (`overview`,
+  `overview-2`, ...) instead of colliding on the same anchor.
+- Table of contents nesting now produces valid, well-formed `<ul>`/`<li>`
+  markup, including when heading levels jump (e.g. h1 directly to h3).
+- HTML fragment mode now includes the table of contents when
+  `includeToc` is enabled, instead of silently ignoring the setting.
+- Preview/HTML source tabs now support full keyboard operation: arrow keys,
+  Home/End, and roving tabindex, with `role="tabpanel"` wired to the
+  correct tab via `aria-labelledby`.
+- Reduced redundant per-keystroke work: character/word/line stats and
+  local-draft saves now run once per debounce cycle instead of twice
+  (once eagerly, once after the delay), cutting main-thread work on large
+  documents.
+
+### Testing
+
+- Added 24 regression tests covering duplicate heading IDs, inline code
+  protection, hard line breaks, nested/fragment TOC output, and adversarial
+  parser timing (both Python-level and through the live HTTP API).
+- Added `.flake8` so `flake8`'s line-length and ignore settings actually
+  match `pyproject.toml`'s `[tool.flake8]` table (vanilla flake8 does not
+  read `pyproject.toml`), and brought the whole codebase to a clean
+  `black --check` / `flake8` pass.
+
+### Documentation
+
+- Updated README, ADSENSE.md, and HANDOFF.md to reflect that the custom
+  domain is live (not a future step), the actual parser limits, and the
+  current AdSense/CMP status.
 
 ## [2.0.0] - 2026-07-21
 
@@ -44,4 +96,5 @@ All notable changes follow semantic versioning.
 - Removed Flask requirements and tracked generated artifacts.
 - Aligned package, documentation, and release version at 2.0.0.
 
+[2.1.0]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.0
 [2.0.0]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.0.0

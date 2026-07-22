@@ -21,6 +21,7 @@ from enum import Enum
 
 class Theme(Enum):
     """Available color themes for generated HTML."""
+
     LIGHT = "light"
     DARK = "dark"
 
@@ -28,78 +29,78 @@ class Theme(Enum):
 class StyleManager:
     """
     Manages CSS styles for HTML document generation.
-    
+
     Provides comprehensive styling including typography, colors,
     code blocks, lists, blockquotes, and table of contents.
-    
+
     Attributes:
         theme: The current color theme (LIGHT or DARK).
-    
+
     Example:
         >>> manager = StyleManager(Theme.DARK)
         >>> css = manager.get_styles()
     """
-    
+
     # Color palettes for themes
     COLORS = {
         Theme.LIGHT: {
-            'bg_primary': '#ffffff',
-            'bg_secondary': '#f6f8fa',
-            'bg_tertiary': '#f1f3f5',
-            'text_primary': '#1f2328',
-            'text_secondary': '#656d76',
-            'text_muted': '#8b949e',
-            'border': '#d0d7de',
-            'border_light': '#e8e8e8',
-            'link': '#0969da',
-            'link_hover': '#0550ae',
-            'code_bg': '#f6f8fa',
-            'code_text': '#1f2328',
-            'blockquote_border': '#d0d7de',
-            'blockquote_text': '#656d76',
-            'hr': '#d8dee4',
-            'toc_bg': '#f6f8fa',
-            'toc_border': '#d0d7de',
+            "bg_primary": "#ffffff",
+            "bg_secondary": "#f6f8fa",
+            "bg_tertiary": "#f1f3f5",
+            "text_primary": "#1f2328",
+            "text_secondary": "#656d76",
+            "text_muted": "#8b949e",
+            "border": "#d0d7de",
+            "border_light": "#e8e8e8",
+            "link": "#0969da",
+            "link_hover": "#0550ae",
+            "code_bg": "#f6f8fa",
+            "code_text": "#1f2328",
+            "blockquote_border": "#d0d7de",
+            "blockquote_text": "#656d76",
+            "hr": "#d8dee4",
+            "toc_bg": "#f6f8fa",
+            "toc_border": "#d0d7de",
         },
         Theme.DARK: {
-            'bg_primary': '#0d1117',
-            'bg_secondary': '#161b22',
-            'bg_tertiary': '#21262d',
-            'text_primary': '#e6edf3',
-            'text_secondary': '#8b949e',
-            'text_muted': '#6e7681',
-            'border': '#30363d',
-            'border_light': '#21262d',
-            'link': '#58a6ff',
-            'link_hover': '#79c0ff',
-            'code_bg': '#161b22',
-            'code_text': '#e6edf3',
-            'blockquote_border': '#3b434b',
-            'blockquote_text': '#8b949e',
-            'hr': '#30363d',
-            'toc_bg': '#161b22',
-            'toc_border': '#30363d',
-        }
+            "bg_primary": "#0d1117",
+            "bg_secondary": "#161b22",
+            "bg_tertiary": "#21262d",
+            "text_primary": "#e6edf3",
+            "text_secondary": "#8b949e",
+            "text_muted": "#6e7681",
+            "border": "#30363d",
+            "border_light": "#21262d",
+            "link": "#58a6ff",
+            "link_hover": "#79c0ff",
+            "code_bg": "#161b22",
+            "code_text": "#e6edf3",
+            "blockquote_border": "#3b434b",
+            "blockquote_text": "#8b949e",
+            "hr": "#30363d",
+            "toc_bg": "#161b22",
+            "toc_border": "#30363d",
+        },
     }
-    
+
     def __init__(self, theme: Theme = Theme.LIGHT):
         """
         Initialize the style manager with a theme.
-        
+
         Args:
             theme: The color theme to use (default: LIGHT).
         """
         self.theme = theme
         self._colors = self.COLORS[theme]
-    
+
     def get_styles(self) -> str:
         """
         Generate complete CSS stylesheet.
-        
+
         Returns:
             CSS string with all styles for the HTML document.
         """
-        return f'''
+        return f"""
 /* ========================================
    md2html Generated Styles
    Theme: {self.theme.value}
@@ -125,22 +126,23 @@ class StyleManager:
     --color-hr: {self._colors['hr']};
     --color-toc-bg: {self._colors['toc_bg']};
     --color-toc-border: {self._colors['toc_border']};
-    
+
     /* Typography */
-    --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", 
-                        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-    --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, 
+    --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                        "Noto Sans", Helvetica, Arial, sans-serif,
+                        "Apple Color Emoji", "Segoe UI Emoji";
+    --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
                         "Liberation Mono", monospace;
     --font-size-base: 16px;
     --line-height-base: 1.6;
-    
+
     /* Spacing */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
     --spacing-md: 1rem;
     --spacing-lg: 1.5rem;
     --spacing-xl: 2rem;
-    
+
     /* Layout */
     --max-width: 800px;
     --border-radius: 6px;
@@ -421,21 +423,21 @@ img {{
         color: black;
         padding: 0;
     }}
-    
+
     .toc {{
         page-break-after: always;
     }}
-    
+
     pre {{
         white-space: pre-wrap;
         border: 1px solid #ddd;
     }}
-    
+
     a {{
         color: black;
         text-decoration: underline;
     }}
-    
+
     a[href^="http"]::after {{
         content: " (" attr(href) ")";
         font-size: 0.8em;
@@ -448,20 +450,20 @@ img {{
     body {{
         padding: var(--spacing-md);
     }}
-    
+
     h1 {{
         font-size: 1.75em;
     }}
-    
+
     h2 {{
         font-size: 1.35em;
     }}
-    
+
     pre {{
         padding: var(--spacing-sm);
         font-size: 80%;
     }}
-    
+
     .toc {{
         padding: var(--spacing-sm) var(--spacing-md);
     }}
@@ -490,16 +492,16 @@ button:focus {{
         --color-link: blue;
     }}
 }}
-'''
-    
+"""
+
     def get_minimal_styles(self) -> str:
         """
         Generate minimal CSS for lightweight output.
-        
+
         Returns:
             Minimal CSS string with only essential styles.
         """
-        return f'''
+        return f"""
 /* Minimal md2html styles */
 body {{
     max-width: 800px;
@@ -555,28 +557,28 @@ hr {{
     border-radius: 6px;
     margin-bottom: 2rem;
 }}
-'''
-    
+"""
+
     def set_theme(self, theme: Theme) -> None:
         """
         Change the current theme.
-        
+
         Args:
             theme: The new theme to apply.
         """
         self.theme = theme
         self._colors = self.COLORS[theme]
-    
+
     def get_color(self, color_name: str) -> str:
         """
         Get a specific color value from the current theme.
-        
+
         Args:
             color_name: Name of the color (e.g., 'bg_primary', 'text_primary').
-            
+
         Returns:
             The color value as a hex string.
-            
+
         Raises:
             KeyError: If the color name doesn't exist.
         """

@@ -85,6 +85,7 @@ output/*.html
 .mcp.json
 .agents/
 .claude/
+.codex/
 *:Zone.Identifier
 
 # Local browser QA screenshots

@@ -52,7 +52,9 @@ def test_invalid_json_returns_400_without_internal_details(server):
 
 
 def test_wrong_content_type_returns_415(server):
-    status, _, _ = request(server, "POST", "/api/convert", "{}", {"Content-Type": "text/plain"})
+    status, _, _ = request(
+        server, "POST", "/api/convert", "{}", {"Content-Type": "text/plain"}
+    )
     assert status == 415
 
 
@@ -62,7 +64,10 @@ def test_oversized_request_returns_413_before_reading_body(server):
         "POST",
         "/api/convert",
         "{}",
-        {"Content-Type": "application/json", "Content-Length": str(MAX_REQUEST_BYTES + 1)},
+        {
+            "Content-Type": "application/json",
+            "Content-Length": str(MAX_REQUEST_BYTES + 1),
+        },
     )
     assert status == 413
 
@@ -82,7 +87,10 @@ def test_missing_route_returns_real_404(server):
 def test_homepage_has_adsense_code_with_matching_csp_nonce(server):
     status, headers, payload = request(server, "GET", "/")
     html = payload.decode("utf-8")
-    nonce_match = re.search(r'<script nonce="([^"]+)" async src="https://pagead2\.googlesyndication\.com/', html)
+    nonce_match = re.search(
+        r'<script nonce="([^"]+)" async src="https://pagead2\.googlesyndication\.com/',
+        html,
+    )
     assert status == 200
     assert nonce_match
     assert f"'nonce-{nonce_match.group(1)}'" in headers["Content-Security-Policy"]
@@ -112,3 +120,44 @@ def test_csolutions_brand_assets_are_public(server):
 def test_static_path_traversal_is_rejected(server):
     status, _, _ = request(server, "GET", "/static/%2e%2e/pyproject.toml")
     assert status == 404
+
+
+def test_fragment_mode_includes_toc_when_requested(server):
+    body = json.dumps(
+        {
+            "markdown": "# Title\n\n## Section",
+            "includeToc": True,
+            "fragmentOnly": True,
+        }
+    )
+    status, _, payload = request(
+        server, "POST", "/api/convert", body, {"Content-Type": "application/json"}
+    )
+    data = json.loads(payload)
+    assert status == 200
+    assert 'class="toc"' in data["html"]
+    assert "<!DOCTYPE" not in data["html"]
+
+
+def test_adversarial_input_converts_without_hanging(server):
+    import time
+
+    body = json.dumps({"markdown": "*a " * 250_000, "includeToc": False})
+    start = time.monotonic()
+    status, _, payload = request(
+        server, "POST", "/api/convert", body, {"Content-Type": "application/json"}
+    )
+    elapsed = time.monotonic() - start
+    assert status == 200
+    assert json.loads(payload)["success"] is True
+    assert elapsed < 8, f"Adversarial conversion took {elapsed:.2f}s, expected < 8s"
+
+
+def test_adsense_csp_omits_unsafe_eval_and_plain_http(server):
+    status, headers, _ = request(server, "GET", "/")
+    csp = headers["Content-Security-Policy"]
+    assert status == 200
+    assert "unsafe-eval" not in csp
+    assert "http:" not in csp
+    assert "'strict-dynamic'" in csp
+    assert "frame-ancestors 'none'" in csp

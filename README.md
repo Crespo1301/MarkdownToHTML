@@ -3,9 +3,9 @@
 A secure, zero-runtime-dependency Python CLI/library and free web converter for
 turning Markdown into an HTML fragment or a complete styled document.
 
-- Production URL (after DNS launch): <https://mdtohtmlconverter.com>
-- Current Vercel URL: <https://markdown-to-html-iota.vercel.app>
-- Version: `2.0.0`
+- Production URL: <https://mdtohtmlconverter.com>
+- Vercel project alias: <https://markdown-to-html-iota.vercel.app>
+- Version: `2.1.0`
 
 ## Web converter
 
@@ -31,17 +31,43 @@ Browser draft recovery uses local storage on the user's device.
 
 The parser supports:
 
-- headings (levels 1 through 6)
-- bold, italic, and combined emphasis
+- headings (levels 1 through 6), with automatic unique IDs even when two
+  headings share the same text
+- bold, italic, and combined emphasis, up to 200 characters per emphasized
+  span (see [Parser limits](#parser-limits-and-abuse-protection))
 - safe HTTP, HTTPS, mailto, relative, and fragment links
 - HTTP, HTTPS, and relative images
 - ordered and unordered lists
 - fenced and indented code blocks
-- inline code, blockquotes, horizontal rules, and paragraphs
+- inline code (protected from later bold/italic processing, so
+  `` `**not bold**` `` renders literally), blockquotes, horizontal rules,
+  and paragraphs
+- hard line breaks (two or more trailing spaces before a newline)
 
 Raw HTML is escaped. Unsafe schemes such as `javascript:` and `data:` are not
 rendered as active links or images. Extended syntax including tables, task
 lists, and strikethrough is not currently interpreted.
+
+Table of contents generation produces properly nested `<ul>`/`<li>` markup
+for both complete documents and HTML fragments (`fragmentOnly: true` with
+`includeToc: true` now includes the TOC in fragment output instead of
+silently dropping it).
+
+## Parser limits and abuse protection
+
+- Markdown is capped at 750,000 characters per request (`MAX_MARKDOWN_CHARS`
+  in `api/index.py`).
+- Emphasis spans (bold/italic) are capped at 200 characters
+  (`MarkdownParser.MAX_EMPHASIS_SPAN`). This bounds the emphasis regexes so
+  adversarial input with many unmatched `*`/`_` characters can't trigger
+  catastrophic backtracking (a 750,000-character adversarial payload
+  previously took 10+ seconds to parse; it now converts in a few seconds).
+  The tradeoff: an emphasized span longer than 200 characters is left as
+  literal `**`/`*` text instead of `<strong>`/`<em>`.
+- The conversion endpoint enforces an 8-second wall-clock ceiling
+  (`CONVERT_TIMEOUT_SECONDS`) as a backstop against any pathological input
+  the length/span limits don't anticipate, returning a `503` rather than
+  tying up the serverless invocation indefinitely.
 
 ## Install and use the CLI
 
@@ -103,6 +129,8 @@ and titles to 200 characters.
 ```bash
 source venv/bin/activate
 pytest
+black --check src api tests
+flake8 src api tests
 git diff --check
 code-review-graph build
 ```
@@ -119,12 +147,23 @@ For visual changes, start the real local server and use the shared runner:
 - all Markdown HTML special characters are escaped
 - generated title and attribute values are escaped
 - URL schemes are allowlisted
+- inline code spans are protected from later bold/italic reprocessing
 - preview uses a sandboxed iframe without script permissions
 - API content type, JSON shape, field types, and sizes are validated
+- emphasis regexes are length-bounded and the conversion endpoint enforces a
+  wall-clock timeout, so adversarial input can't monopolize the serverless
+  invocation (see [Parser limits](#parser-limits-and-abuse-protection))
 - static file paths are resolved inside the static directory
 - public errors do not reveal exception details
-- CSP, framing, content-type, referrer, and permissions headers are applied
-- conversion responses use `Cache-Control: no-store`
+- CSP, framing, content-type, referrer, and permissions headers are applied,
+  and the AdSense CSP is narrowed to the specific Google ad-serving hosts
+  currently required rather than a blanket `https:`
+- conversion responses use `Cache-Control: no-store`; submitted Markdown is
+  processed in memory only and is never logged or persisted
+- remote image URLs in submitted Markdown are fetched by the reader's own
+  browser when the preview or output HTML is viewed, which can reveal the
+  reader's IP address and request metadata to whatever host serves that
+  image — the same as any Markdown or HTML renderer that supports images
 
 See [SECURITY-CHECKLIST.md](SECURITY-CHECKLIST.md) and
 [HANDOFF.md](HANDOFF.md) for the release audit and operational notes.
