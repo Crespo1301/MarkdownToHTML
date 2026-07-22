@@ -2,11 +2,29 @@
 
 ## Release
 
-- Current: `v2.1.0` — functionality, security, accessibility, and content
-  pass on top of the live production converter.
+- Current: `v2.1.2` — functionality, security, accessibility, content,
+  AdSense site verification, and stale-output protection on top of the live
+  production converter.
 - Canonical origin in code: `https://mdtohtmlconverter.com` (live)
 - Existing Vercel project: `markdown-to-html`
 - Existing production alias: `https://markdown-to-html-iota.vercel.app`
+
+## v2.1.2 decisions
+
+- An in-flight complete-document download is now aborted when the editor
+  changes, and its request sequence is checked before a file can be saved.
+  This extends the existing stale-preview protections to the download path.
+- Added regression coverage for download invalidation and the public API's
+  timeout-to-`503` response.
+
+## v2.1.1 decisions
+
+- Added Google's `google-adsense-account` verification meta tag to every
+  public page, alongside the existing verification script and authorized
+  `ads.txt` entry.
+- Kept visible ad placements disabled while Google reviews the site. Approval
+  and responsive ad-slot activation remain separate operator actions described
+  in `ADSENSE.md`.
 
 ## v2.1.0 decisions
 

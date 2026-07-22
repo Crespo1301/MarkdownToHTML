@@ -46,6 +46,7 @@ let currentHtml = "";
 let outputIsStale = true;
 let debounceTimer;
 let activeRequest;
+let activeDownloadRequest;
 let requestSequence = 0;
 let toastTimer;
 
@@ -128,6 +129,7 @@ function invalidateOutput() {
   // window or an in-flight request.
   outputIsStale = true;
   ++requestSequence;
+  if (activeDownloadRequest) activeDownloadRequest.abort();
   elements.copy.disabled = true;
 }
 
@@ -232,13 +234,18 @@ async function copyHtml() {
 
 async function downloadHtml() {
   if (!elements.markdown.value.trim()) return;
+  if (activeDownloadRequest) activeDownloadRequest.abort();
+  const sequence = requestSequence;
+  const downloadRequest = new AbortController();
+  activeDownloadRequest = downloadRequest;
   elements.download.disabled = true;
   announce("Preparing complete document…");
   try {
     const html =
       elements.output.value === "document" && !outputIsStale
         ? currentHtml
-        : await requestConversion(false);
+        : await requestConversion(false, downloadRequest.signal);
+    if (sequence !== requestSequence) return;
     const filename = (elements.title.value || "converted-document").toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-|-$/gu, "") || "converted-document";
     const url = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
     const link = document.createElement("a");
@@ -251,9 +258,13 @@ async function downloadHtml() {
     toast("Complete HTML document downloaded");
     announce("Conversion complete", "success");
   } catch (error) {
+    if (error.name === "AbortError") return;
     announce(error.message, "error");
   } finally {
-    elements.download.disabled = false;
+    if (activeDownloadRequest === downloadRequest) {
+      activeDownloadRequest = undefined;
+      elements.download.disabled = !elements.markdown.value.trim();
+    }
   }
 }
 

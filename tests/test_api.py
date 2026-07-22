@@ -8,7 +8,7 @@ from threading import Thread
 
 import pytest
 
-from api.index import MAX_REQUEST_BYTES, handler
+from api.index import ConversionTimeout, MAX_REQUEST_BYTES, ROOT, handler
 
 
 @pytest.fixture
@@ -164,6 +164,32 @@ def test_adversarial_input_converts_without_hanging(server):
     assert status == 200
     assert json.loads(payload)["success"] is True
     assert elapsed < 8, f"Adversarial conversion took {elapsed:.2f}s, expected < 8s"
+
+
+def test_conversion_timeout_returns_503(server, monkeypatch):
+    def time_out(_handler, _data):
+        raise ConversionTimeout("Conversion took too long.")
+
+    monkeypatch.setattr(handler, "_convert_with_timeout", time_out)
+    body = json.dumps({"markdown": "# Slow document"})
+    status, _, payload = request(
+        server, "POST", "/api/convert", body, {"Content-Type": "application/json"}
+    )
+    data = json.loads(payload)
+    assert status == 503
+    assert data["success"] is False
+    assert data["error"] == (
+        "This document was too complex to convert in time. "
+        "Try simplifying or shortening it."
+    )
+
+
+def test_frontend_invalidates_in_flight_downloads():
+    script = (ROOT / "static" / "js" / "app.js").read_text(encoding="utf-8")
+    assert "let activeDownloadRequest;" in script
+    assert "if (activeDownloadRequest) activeDownloadRequest.abort();" in script
+    assert "await requestConversion(false, downloadRequest.signal)" in script
+    assert "if (sequence !== requestSequence) return;" in script
 
 
 def test_adsense_csp_omits_unsafe_eval_and_plain_http(server):

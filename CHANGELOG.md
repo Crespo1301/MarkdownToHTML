@@ -2,6 +2,25 @@
 
 All notable changes follow semantic versioning.
 
+## [2.1.2] - 2026-07-22
+
+### Fixed
+
+- Prevented a slow complete-document download request from saving stale HTML
+  after the Markdown, title, theme, output type, or table-of-contents setting
+  changes. In-flight downloads are now aborted and sequence-checked before a
+  file can be created.
+
+### Testing
+
+- Added regression coverage for stale-download invalidation and the public
+  API's conversion-timeout `503` response.
+
+### Documentation
+
+- Corrected the release handoff so its current version and operational notes
+  match the shipped product.
+
 ## [2.1.1] - 2026-07-22
 
 ### AdSense
@@ -105,6 +124,7 @@ All notable changes follow semantic versioning.
 - Removed Flask requirements and tracked generated artifacts.
 - Aligned package, documentation, and release version at 2.0.0.
 
+[2.1.2]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.2
 [2.1.1]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.1
 [2.1.0]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.0
 [2.0.0]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.0.0
