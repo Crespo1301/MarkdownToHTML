@@ -126,7 +126,7 @@ class TestLinks:
     def test_basic_link(self, parser):
         """Test basic link parsing."""
         tokens = parser.parse("[GitHub](https://github.com)")
-        assert '<a href="https://github.com">GitHub</a>' in tokens[0].content
+        assert '<a href="https://github.com" rel="noopener noreferrer">GitHub</a>' in tokens[0].content
     
     def test_link_with_title(self, parser):
         """Test link with title attribute."""

@@ -1,204 +1,257 @@
-/**
- * Markdown to HTML Converter - Web App
- * Author: Carlos Crespo
- */
+"use strict";
 
-// DOM Elements
-const markdownInput = document.getElementById('markdown-input');
-const previewFrame = document.getElementById('preview-frame');
-const themeSelect = document.getElementById('theme-select');
-const tocCheckbox = document.getElementById('toc-checkbox');
-const titleInput = document.getElementById('title-input');
-const clearBtn = document.getElementById('clear-btn');
-const copyBtn = document.getElementById('copy-btn');
-const downloadBtn = document.getElementById('download-btn');
-const uploadBtn = document.getElementById('upload-btn');
-const fileInput = document.getElementById('file-input');
-const toast = document.getElementById('toast');
+const MAX_FILE_BYTES = 750000;
+const STORAGE_KEY = "mdtohtmlconverter:draft:v2";
+const SAMPLE = `# Publish-ready Markdown
 
-// State
-let currentHtml = '';
-let debounceTimer = null;
+Turn **Markdown** into clean HTML for a website, blog, or CMS.
 
-/**
- * Show a toast notification
- */
-function showToast(message, type = 'default') {
-    toast.textContent = message;
-    toast.className = 'toast show' + (type === 'success' ? ' success' : '');
-    
-    setTimeout(() => {
-        toast.className = 'toast';
-    }, 3000);
+## What you can do
+
+- Preview the rendered result
+- Inspect and copy the HTML source
+- Download a complete styled document
+
+> The preview is sandboxed and unsafe links are removed.
+
+\`\`\`html
+<article>Your code examples remain escaped.</article>
+\`\`\``;
+
+const elements = {
+  markdown: document.querySelector("#markdown-input"),
+  title: document.querySelector("#title-input"),
+  theme: document.querySelector("#theme-select"),
+  output: document.querySelector("#output-select"),
+  toc: document.querySelector("#toc-checkbox"),
+  iframe: document.querySelector("#preview-frame"),
+  preview: document.querySelector("#preview-container"),
+  source: document.querySelector("#source-output"),
+  sourceCode: document.querySelector("#source-output code"),
+  empty: document.querySelector("#empty-state"),
+  status: document.querySelector("#status"),
+  stats: document.querySelector("#input-stats"),
+  file: document.querySelector("#file-input"),
+  upload: document.querySelector("#upload-btn"),
+  sample: document.querySelector("#sample-btn"),
+  clear: document.querySelector("#clear-btn"),
+  copy: document.querySelector("#copy-btn"),
+  download: document.querySelector("#download-btn"),
+  previewTab: document.querySelector("#preview-tab"),
+  sourceTab: document.querySelector("#source-tab"),
+  toast: document.querySelector("#toast"),
+};
+
+let currentHtml = "";
+let debounceTimer;
+let activeRequest;
+let requestSequence = 0;
+let toastTimer;
+
+function announce(message, kind = "") {
+  elements.status.textContent = message;
+  elements.status.dataset.kind = kind;
 }
 
-/**
- * Convert markdown via API
- */
+function toast(message) {
+  window.clearTimeout(toastTimer);
+  elements.toast.textContent = message;
+  elements.toast.classList.add("show");
+  toastTimer = window.setTimeout(() => elements.toast.classList.remove("show"), 2400);
+}
+
+function updateStats() {
+  const value = elements.markdown.value;
+  const words = value.trim() ? value.trim().split(/\s+/u).length : 0;
+  const lines = value ? value.split(/\r\n|\r|\n/u).length : 0;
+  elements.stats.textContent = `${value.length.toLocaleString()} characters · ${words.toLocaleString()} words · ${lines.toLocaleString()} lines`;
+}
+
+function saveDraft() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      markdown: elements.markdown.value,
+      title: elements.title.value,
+      theme: elements.theme.value,
+      output: elements.output.value,
+      toc: elements.toc.checked,
+    }));
+  } catch (_error) {
+    announce("Draft could not be saved in this browser.", "error");
+  }
+}
+
+function restoreDraft() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (!saved || typeof saved.markdown !== "string") return;
+    elements.markdown.value = saved.markdown;
+    elements.title.value = typeof saved.title === "string" ? saved.title : "Converted Document";
+    elements.theme.value = saved.theme === "dark" ? "dark" : "light";
+    elements.output.value = saved.output === "fragment" ? "fragment" : "document";
+    elements.toc.checked = saved.toc !== false;
+  } catch (_error) {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+}
+
+function setBusy(isBusy) {
+  elements.copy.disabled = isBusy || !currentHtml;
+  elements.download.disabled = isBusy || !elements.markdown.value.trim();
+  elements.markdown.setAttribute("aria-busy", String(isBusy));
+}
+
+async function requestConversion(fragmentOnly, signal) {
+  const response = await fetch("/api/convert", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      markdown: elements.markdown.value,
+      title: elements.title.value || "Converted Document",
+      theme: elements.theme.value,
+      includeToc: elements.toc.checked,
+      fragmentOnly,
+    }),
+    signal,
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || "Conversion failed. Please try again.");
+  return data.html;
+}
+
 async function convertMarkdown() {
-    const markdown = markdownInput.value;
-    const theme = themeSelect.value;
-    const includeToc = tocCheckbox.checked;
-    const title = titleInput.value || 'Converted Document';
+  saveDraft();
+  updateStats();
+  if (!elements.markdown.value.trim()) {
+    if (activeRequest) activeRequest.abort();
+    currentHtml = "";
+    elements.iframe.srcdoc = "";
+    elements.sourceCode.textContent = "";
+    elements.empty.hidden = false;
+    announce("Ready");
+    setBusy(false);
+    return;
+  }
 
-    if (!markdown.trim()) {
-        updatePreview('<html><body><p style="color:#888;padding:20px;">Enter some Markdown to see the preview...</p></body></html>');
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/convert', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                markdown,
-                theme,
-                includeToc,
-                title
-            }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            currentHtml = data.html;
-            updatePreview(data.html);
-        } else {
-            console.error('Conversion error:', data.error);
-            showToast('Error: ' + data.error);
-        }
-    } catch (error) {
-        console.error('Request error:', error);
-        showToast('Connection error. Please try again.');
-    }
+  if (activeRequest) activeRequest.abort();
+  activeRequest = new AbortController();
+  const sequence = ++requestSequence;
+  setBusy(true);
+  announce("Converting…");
+  try {
+    const html = await requestConversion(elements.output.value === "fragment", activeRequest.signal);
+    if (sequence !== requestSequence) return;
+    currentHtml = html;
+    elements.iframe.srcdoc = html;
+    elements.sourceCode.textContent = html;
+    elements.empty.hidden = true;
+    announce("Conversion complete", "success");
+  } catch (error) {
+    if (error.name === "AbortError") return;
+    announce(error.message, "error");
+  } finally {
+    if (sequence === requestSequence) setBusy(false);
+  }
 }
 
-/**
- * Update the preview iframe
- */
-function updatePreview(html) {
-    const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-    doc.open();
-    doc.write(html);
-    doc.close();
+function scheduleConversion() {
+  window.clearTimeout(debounceTimer);
+  updateStats();
+  saveDraft();
+  announce("Waiting for input…");
+  debounceTimer = window.setTimeout(convertMarkdown, 450);
 }
 
-/**
- * Debounced conversion (wait for typing to stop)
- */
-function debouncedConvert() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(convertMarkdown, 300);
+function showView(view) {
+  const sourceVisible = view === "source";
+  elements.preview.hidden = sourceVisible;
+  elements.source.hidden = !sourceVisible;
+  elements.previewTab.classList.toggle("active", !sourceVisible);
+  elements.sourceTab.classList.toggle("active", sourceVisible);
+  elements.previewTab.setAttribute("aria-selected", String(!sourceVisible));
+  elements.sourceTab.setAttribute("aria-selected", String(sourceVisible));
 }
 
-/**
- * Copy HTML to clipboard
- */
 async function copyHtml() {
-    if (!currentHtml) {
-        showToast('Nothing to copy');
-        return;
-    }
-
-    try {
-        await navigator.clipboard.writeText(currentHtml);
-        showToast('HTML copied to clipboard!', 'success');
-    } catch (error) {
-        const textarea = document.createElement('textarea');
-        textarea.value = currentHtml;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        showToast('HTML copied to clipboard!', 'success');
-    }
+  if (!currentHtml) return;
+  try {
+    await navigator.clipboard.writeText(currentHtml);
+  } catch (_error) {
+    const temporary = document.createElement("textarea");
+    temporary.value = currentHtml;
+    document.body.append(temporary);
+    temporary.select();
+    document.execCommand("copy");
+    temporary.remove();
+  }
+  toast(elements.output.value === "fragment" ? "HTML fragment copied" : "Complete HTML copied");
 }
 
-/**
- * Download HTML file
- */
-function downloadHtml() {
-    if (!currentHtml) {
-        showToast('Nothing to download');
-        return;
-    }
-
-    const title = titleInput.value || 'converted';
-    const filename = title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.html';
-    
-    const blob = new Blob([currentHtml], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+async function downloadHtml() {
+  if (!elements.markdown.value.trim()) return;
+  elements.download.disabled = true;
+  announce("Preparing complete document…");
+  try {
+    const html = elements.output.value === "document" ? currentHtml : await requestConversion(false);
+    const filename = (elements.title.value || "converted-document").toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-|-$/gu, "") || "converted-document";
+    const url = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${filename}.html`;
+    document.body.append(link);
+    link.click();
+    link.remove();
     URL.revokeObjectURL(url);
-    
-    showToast('Downloaded ' + filename, 'success');
+    toast("Complete HTML document downloaded");
+    announce("Conversion complete", "success");
+  } catch (error) {
+    announce(error.message, "error");
+  } finally {
+    elements.download.disabled = false;
+  }
 }
 
-/**
- * Clear the editor
- */
+async function loadFile(event) {
+  const file = event.target.files[0];
+  event.target.value = "";
+  if (!file) return;
+  const extensionAllowed = /\.(md|markdown|txt)$/iu.test(file.name);
+  if (!extensionAllowed) return toast("Choose a .md, .markdown, or .txt file");
+  if (file.size > MAX_FILE_BYTES) return toast("File must be 750 KB or smaller");
+  try {
+    elements.markdown.value = await file.text();
+    elements.title.value = file.name.replace(/\.(md|markdown|txt)$/iu, "").slice(0, 200);
+    await convertMarkdown();
+    toast(`Loaded ${file.name}`);
+  } catch (_error) {
+    announce("The file could not be read.", "error");
+  }
+}
+
 function clearEditor() {
-    markdownInput.value = '';
-    currentHtml = '';
-    updatePreview('<html><body></body></html>');
-    showToast('Editor cleared');
+  if (elements.markdown.value && !window.confirm("Clear the editor and saved draft?")) return;
+  elements.markdown.value = "";
+  elements.title.value = "Converted Document";
+  localStorage.removeItem(STORAGE_KEY);
+  convertMarkdown();
+  elements.markdown.focus();
 }
 
-/**
- * Handle file upload
- */
-function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+elements.markdown.addEventListener("input", scheduleConversion);
+elements.title.addEventListener("input", scheduleConversion);
+elements.theme.addEventListener("change", convertMarkdown);
+elements.output.addEventListener("change", convertMarkdown);
+elements.toc.addEventListener("change", convertMarkdown);
+elements.upload.addEventListener("click", () => elements.file.click());
+elements.file.addEventListener("change", loadFile);
+elements.sample.addEventListener("click", () => { elements.markdown.value = SAMPLE; elements.title.value = "Publish-ready Markdown"; convertMarkdown(); });
+elements.clear.addEventListener("click", clearEditor);
+elements.copy.addEventListener("click", copyHtml);
+elements.download.addEventListener("click", downloadHtml);
+elements.previewTab.addEventListener("click", () => showView("preview"));
+elements.sourceTab.addEventListener("click", () => showView("source"));
 
-    if (!file.name.endsWith('.md') && !file.name.endsWith('.markdown') && !file.name.endsWith('.txt')) {
-        showToast('Please upload a .md, .markdown, or .txt file');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        markdownInput.value = e.target.result;
-        // Set title from filename
-        const baseName = file.name.replace(/\.(md|markdown|txt)$/, '');
-        titleInput.value = baseName;
-        convertMarkdown();
-        showToast('File loaded: ' + file.name, 'success');
-    };
-    reader.onerror = function() {
-        showToast('Error reading file');
-    };
-    reader.readAsText(file);
-    
-    // Reset input so same file can be uploaded again
-    event.target.value = '';
-}
-
-/**
- * Trigger file input click
- */
-function triggerUpload() {
-    fileInput.click();
-}
-
-// Event Listeners
-markdownInput.addEventListener('input', debouncedConvert);
-themeSelect.addEventListener('change', convertMarkdown);
-tocCheckbox.addEventListener('change', convertMarkdown);
-titleInput.addEventListener('input', debouncedConvert);
-clearBtn.addEventListener('click', clearEditor);
-copyBtn.addEventListener('click', copyHtml);
-downloadBtn.addEventListener('click', downloadHtml);
-uploadBtn.addEventListener('click', triggerUpload);
-fileInput.addEventListener('change', handleFileUpload);
-
-// Initial conversion on page load
-document.addEventListener('DOMContentLoaded', convertMarkdown);
+restoreDraft();
+updateStats();
+showView("preview");
+convertMarkdown();

@@ -1,375 +1,147 @@
 # Markdown to HTML Converter
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://img.shields.io/badge/tests-73%20passed-brightgreen.svg)](#testing)
+A secure, zero-runtime-dependency Python CLI/library and free web converter for
+turning Markdown into an HTML fragment or a complete styled document.
 
-A lightweight, zero-dependency Python tool for converting Markdown files to beautifully styled HTML with automatic table of contents generation.
+- Production URL (after DNS launch): <https://mdtohtmlconverter.com>
+- Current Vercel URL: <https://markdown-to-html-iota.vercel.app>
+- Version: `2.0.0`
 
-## Role In The Business
+## Web converter
 
-- This repo is one of the public web apps listed in `Portfolio/src/data/projects.ts`.
-- It shows CSolutions can ship real tools, not only marketing sites.
-- It is both a showcase app and a reusable developer utility.
+The converter is the first screen. It includes:
 
-## Shared Docs
+- Markdown input, sandboxed rendered preview, and raw HTML source
+- Copy HTML and download-complete-document actions
+- `.md`, `.markdown`, and `.txt` upload with a 750 KB limit
+- clear and sample controls
+- light and dark output themes
+- optional table of contents
+- fragment and complete-document output modes
+- character, word, and line counts
+- abortable conversion requests that prevent stale results
+- local browser draft recovery
+- keyboard labels, live status, visible focus, and responsive layouts
 
-- `AGENTS.md`
-- `CLAUDE.md`
-- `AI-WORKFLOW.md`
-- `SECURITY-CHECKLIST.md`
+Markdown is sent to a serverless API for conversion. The application has no
+document database and does not intentionally store submitted document content.
+Browser draft recovery uses local storage on the user's device.
 
-## Workspace Notes
+## Supported Markdown
 
-- Keep README behavior claims aligned with the actual CLI and web flows.
-- Treat this repo as a real product surface, not just a code sample.
-- When changing parsing behavior, update tests and examples together.
+The parser supports:
 
-![Light Theme Demo]()
+- headings (levels 1 through 6)
+- bold, italic, and combined emphasis
+- safe HTTP, HTTPS, mailto, relative, and fragment links
+- HTTP, HTTPS, and relative images
+- ordered and unordered lists
+- fenced and indented code blocks
+- inline code, blockquotes, horizontal rules, and paragraphs
 
-## Features
+Raw HTML is escaped. Unsafe schemes such as `javascript:` and `data:` are not
+rendered as active links or images. Extended syntax including tables, task
+lists, and strikethrough is not currently interpreted.
 
-- **Complete Markdown Support**: Headers, bold, italic, links, images, lists, code blocks, blockquotes, and more
-- **Automatic Table of Contents**: Generated from document headers with anchor links
-- **Beautiful Themes**: Light and dark themes with GitHub-flavored styling
-- **CLI Tool**: Easy command-line interface for single and batch conversions
-- **Python API**: Use as a library in your own projects
-- **Zero Dependencies**: Pure Python implementation (only pytest for testing)
-- **Responsive Design**: Mobile-friendly output with print styles
-
-## Installation
-
-### From Source (Recommended)
+## Install and use the CLI
 
 ```bash
-# Clone the repository
-git clone https://github.com/Crespo1301/MarkdownToHTML.git
-cd MarkdownToHTML
-
-# Create and activate virtual environment
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install the package
+source venv/bin/activate
 pip install -e .
-```
-
-### Run Without Installing
-
-If you prefer not to install, you can run directly:
-
-```bash
-git clone https://github.com/Crespo1301/MarkdownToHTML.git
-cd MarkdownToHTML
-
-# Run with PYTHONPATH
-PYTHONPATH=src python -m md2html.cli your_file.md
-```
-
-## Quick Start
-
-### Command Line
-
-```bash
-# Basic conversion
 md2html README.md
-
-# Specify output file
-md2html README.md -o docs/readme.html
-
-# Use dark theme
-md2html README.md --theme dark
-
-# Disable table of contents
-md2html README.md --no-toc
-
-# Batch convert all markdown files
-md2html docs/*.md -d output/
+md2html README.md --theme dark --no-toc
+md2html README.md --fragment -o readme-fragment.html
 ```
 
-### Python API
+Run without installing:
+
+```bash
+PYTHONPATH=src python -m md2html.cli README.md --dry-run
+```
+
+## Python API
 
 ```python
-from md2html import MarkdownParser, HTMLConverter
-from md2html.styles import Theme
-
-# Parse markdown
-parser = MarkdownParser()
-tokens = parser.parse("# Hello World\n\nThis is **bold** text.")
-
-# Convert to HTML
-converter = HTMLConverter(theme=Theme.LIGHT, include_toc=True)
-html = converter.convert(tokens, title="My Document")
-
-# Or use the convenience function
 from md2html.converter import convert_markdown_to_html
+from md2html.styles import Theme
 
 html = convert_markdown_to_html(
-    "# Title\n\nContent here.",
-    title="My Doc",
-    theme=Theme.DARK,
-    include_toc=True
+    "# Hello\n\nA **safe** document.",
+    title="Example",
+    theme=Theme.LIGHT,
+    include_toc=True,
 )
 ```
 
-## Supported Markdown Syntax
+## Local web development
 
-### Headers
-
-```markdown
-# H1 Header
-## H2 Header
-### H3 Header
-#### H4 Header
-##### H5 Header
-###### H6 Header
-```
-
-### Text Formatting
-
-```markdown
-**bold text** or __bold text__
-*italic text* or _italic text_
-***bold and italic*** or ___bold and italic___
-`inline code`
-```
-
-### Links and Images
-
-```markdown
-[Link Text](https://example.com)
-[Link with Title](https://example.com "Title")
-
-![Alt Text](image.png)
-![Image with Title](image.png "Title")
-```
-
-### Lists
-
-```markdown
-Unordered:
-- Item 1
-- Item 2
-  - Nested item
-- Item 3
-
-Ordered:
-1. First
-2. Second
-3. Third
-```
-
-### Code Blocks
-
-````markdown
-```python
-def hello():
-    print("Hello, World!")
-```
-
-    # Or indent with 4 spaces
-    code here
-````
-
-### Blockquotes
-
-```markdown
-> This is a blockquote
-> It can span multiple lines
-```
-
-### Horizontal Rules
-
-```markdown
----
-***
-___
-```
-
-## CLI Reference
-
-```
-usage: md2html [-h] [-o OUTPUT] [-d OUTPUT_DIR] [-t {light,dark}]
-               [--no-styles] [--minimal-styles] [--no-toc]
-               [--toc-title TOC_TITLE] [--title TITLE] [--fragment]
-               [-v] [-q] [--dry-run]
-               input [input ...]
-
-Convert Markdown files to beautifully styled HTML
-
-positional arguments:
-  input                 Input Markdown file(s) to convert
-
-options:
-  -h, --help            show this help message and exit
-  --fragment            Output HTML fragment without document wrapper
-  -v, --version         show program's version number and exit
-  -q, --quiet           Suppress output messages
-  --dry-run             Show what would be done without creating files
-
-Output Options:
-  -o, --output          Output file path
-  -d, --output-dir      Output directory for batch conversions
-
-Styling Options:
-  -t, --theme           Color theme: light (default) or dark
-  --no-styles           Exclude CSS styles from output
-  --minimal-styles      Use minimal CSS instead of full styles
-
-Content Options:
-  --no-toc              Disable table of contents generation
-  --toc-title           Custom title for table of contents
-  --title               Document title (default: from first h1)
-```
-
-## Examples
-
-### Basic Conversion
+The production entry point uses Python's `BaseHTTPRequestHandler`, so no Flask
+runtime is required.
 
 ```bash
-md2html article.md
-# Creates: article.html
+vercel dev
 ```
 
-### Dark Theme with Custom Title
+The API accepts `POST /api/convert` with `application/json`:
+
+```json
+{
+  "markdown": "# Hello",
+  "title": "Example",
+  "theme": "light",
+  "includeToc": true,
+  "fragmentOnly": false
+}
+```
+
+Request bodies are limited to 1 MB. Markdown is limited to 750,000 characters
+and titles to 200 characters.
+
+## Test and verify
 
 ```bash
-md2html notes.md -o notes.html --theme dark --title "My Notes"
+source venv/bin/activate
+pytest
+git diff --check
+code-review-graph build
 ```
 
-### Batch Processing
+For visual changes, start the real local server and use the shared runner:
 
 ```bash
-# Convert all markdown files in docs/ to html/
-md2html docs/*.md -d html/
+/home/cresp3/scripts/visual-check.sh --url http://localhost:3000/ --out .visual-checks/mobile.png
+/home/cresp3/scripts/visual-check.sh --desktop --url http://localhost:3000/ --out .visual-checks/desktop.png
 ```
 
-### HTML Fragment (for embedding)
+## Security model
 
-```bash
-md2html content.md --fragment -o partial.html
+- all Markdown HTML special characters are escaped
+- generated title and attribute values are escaped
+- URL schemes are allowlisted
+- preview uses a sandboxed iframe without script permissions
+- API content type, JSON shape, field types, and sizes are validated
+- static file paths are resolved inside the static directory
+- public errors do not reveal exception details
+- CSP, framing, content-type, referrer, and permissions headers are applied
+- conversion responses use `Cache-Control: no-store`
+
+See [SECURITY-CHECKLIST.md](SECURITY-CHECKLIST.md) and
+[HANDOFF.md](HANDOFF.md) for the release audit and operational notes.
+
+## Project structure
+
+```text
+api/index.py          Vercel HTTP entry point
+src/md2html/          Python parser, converter, styles, and CLI
+static/               Browser CSS, JavaScript, crawler files, and images
+templates/            Tool, legal, support, and 404 pages
+tests/                Parser, converter, API, and security tests
+examples/             Example Markdown inputs
 ```
 
-## Project Structure
+## License and author
 
-```
-markdown-to-html/
-├── src/
-│   └── md2html/
-│       ├── __init__.py      # Package initialization
-│       ├── parser.py        # Markdown parsing engine
-│       ├── converter.py     # HTML generation
-│       ├── styles.py        # CSS themes and styling
-│       └── cli.py           # Command-line interface
-├── tests/
-│   ├── test_parser.py       # Parser unit tests
-│   └── test_converter.py    # Converter unit tests
-├── examples/
-│   ├── demo.md              # Full feature demonstration
-│   └── quickstart.md        # Quick start guide
-├── output/                  # Generated HTML files
-├── pyproject.toml           # Project configuration
-└── README.md
-```
-
-## Testing
-
-Run the test suite:
-
-```bash
-# Make sure virtual environment is activated
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install test dependencies
-pip install pytest
-
-# Run all tests
-pytest tests/ -v
-
-# Run with coverage report
-pip install pytest-cov
-pytest tests/ --cov=md2html --cov-report=html
-```
-
-Current test coverage: **73 tests passing**
-
-## API Reference
-
-### MarkdownParser
-
-```python
-from md2html import MarkdownParser
-
-parser = MarkdownParser()
-tokens = parser.parse(markdown_string)
-headers = parser.get_headers()  # For TOC generation
-```
-
-### HTMLConverter
-
-```python
-from md2html import HTMLConverter
-from md2html.styles import Theme
-
-converter = HTMLConverter(
-    theme=Theme.LIGHT,      # or Theme.DARK
-    include_toc=True,       # Generate table of contents
-    toc_title="Contents",   # TOC heading
-    include_styles=True     # Embed CSS
-)
-
-# Full document
-html = converter.convert(tokens, title="My Document")
-
-# HTML fragment only
-fragment = converter.convert_fragment(tokens)
-```
-
-### StyleManager
-
-```python
-from md2html import StyleManager
-from md2html.styles import Theme
-
-manager = StyleManager(Theme.DARK)
-css = manager.get_styles()           # Full CSS
-css = manager.get_minimal_styles()   # Lightweight CSS
-```
-
-## Themes
-
-### Light Theme
-Clean, professional styling with a white background. Ideal for documentation and reading.
-
-### Dark Theme
-Eye-friendly dark mode with carefully selected colors. Perfect for developers and night reading.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Author
-
-**Carlos Crespo**
-- GitHub: [@Crespo1301](https://github.com/Crespo1301)
-- Portfolio: [carloscrespo.info](https://carloscrespo.info)
-
-## Acknowledgments
-
-- Inspired by GitHub Flavored Markdown
-- Styling influenced by GitHub's markdown rendering
-- Built as part of my software engineering portfolio
-
----
-
-*Made with ❤️ by Carlos Crespo*
+MIT License. Built by [Carlos Crespo](https://carloscrespo.info) as a public
+[CSolutions](https://carloscrespo.info) utility. Contributions and issue reports
+are welcome in the [GitHub repository](https://github.com/Crespo1301/MarkdownToHTML).

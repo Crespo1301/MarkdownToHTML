@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "md2html"
-version = "1.0.0"
-description = "A lightweight Markdown to HTML converter with styling and TOC generation"
+version = "2.0.0"
+description = "A secure Markdown to HTML converter with styled documents and TOC generation"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Carlos Crespo", email = "carlos@example.com"}
+    {name = "Carlos Crespo"}
 ]
 keywords = ["markdown", "html", "converter", "cli", "documentation"]
 classifiers = [
@@ -43,6 +43,7 @@ md2html = "md2html.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/Crespo1301/MarkdownToHTML"
+Web = "https://mdtohtmlconverter.com"
 Repository = "https://github.com/Crespo1301/MarkdownToHTML"
 Issues = "https://github.com/Crespo1301/MarkdownToHTML/issues"
 

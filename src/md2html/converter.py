@@ -15,6 +15,8 @@ Features:
 Author: Carlos Crespo
 """
 
+import html
+import re
 from typing import List, Optional
 from .parser import Token, TokenType, MarkdownParser
 from .styles import StyleManager, Theme
@@ -200,7 +202,8 @@ class HTMLConverter:
             HTML pre and code tags with syntax highlighting class.
         """
         content = self._escape_code_html(token.content)
-        language = token.language
+        language_name = token.language.split(maxsplit=1)[0] if token.language else ""
+        language = re.sub(r"[^a-zA-Z0-9_+-]", "", language_name)[:40]
         
         if language:
             return f'<pre><code class="language-{language}">{content}</code></pre>'
@@ -378,13 +381,14 @@ class HTMLConverter:
         if self.include_styles:
             styles = f'<style>\n{self.style_manager.get_styles()}\n</style>'
         
+        safe_title = html.escape(title, quote=True)
         return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="md2html by Carlos Crespo">
-    <title>{title}</title>
+    <title>{safe_title}</title>
     {styles}
 </head>
 <body>

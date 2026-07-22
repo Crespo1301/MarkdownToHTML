@@ -1,102 +1,103 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown to HTML Converter</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown to HTML Converter | Free, Secure Online Tool</title>
+  <meta name="description" content="Convert Markdown to clean HTML with a live preview. Copy an HTML fragment or download a complete styled document for free.">
+  <link rel="canonical" href="https://mdtohtmlconverter.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Markdown to HTML Converter">
+  <meta property="og:description" content="Convert Markdown to clean HTML, preview it safely, then copy or download the result.">
+  <meta property="og:url" content="https://mdtohtmlconverter.com/">
+  <meta property="og:image" content="https://mdtohtmlconverter.com/static/share-card.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Markdown to HTML Converter</h1>
-            <p class="subtitle">Convert your Markdown to beautifully styled HTML</p>
-        </header>
+  <a class="skip-link" href="#converter">Skip to converter</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Markdown to HTML Converter home">MD<span aria-hidden="true">→</span>HTML</a>
+    <nav aria-label="Main navigation">
+      <a href="#syntax">Syntax</a><a href="#faq">FAQ</a><a href="/about">About</a><a href="/support">Support</a>
+    </nav>
+  </header>
 
-        <div class="controls">
-            <div class="control-group">
-                <label for="theme-select">Theme:</label>
-                <select id="theme-select">
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="toc-checkbox">
-                    <input type="checkbox" id="toc-checkbox" checked>
-                    Include Table of Contents
-                </label>
-            </div>
-            <div class="control-group">
-                <label for="title-input">Document Title:</label>
-                <input type="text" id="title-input" placeholder="My Document" value="Converted Document">
-            </div>
-        </div>
+  <main>
+    <section id="converter" class="tool" itemscope itemtype="https://schema.org/WebApplication">
+      <meta itemprop="name" content="Markdown to HTML Converter">
+      <meta itemprop="applicationCategory" content="DeveloperApplication">
+      <meta itemprop="operatingSystem" content="Any modern web browser">
+      <header class="tool-intro">
+        <div><h1 itemprop="name">Markdown to HTML Converter</h1><p>Paste Markdown, inspect the result, then copy a fragment or download a complete HTML document.</p></div>
+        <span class="free-label">Free · no sign-in</span>
+      </header>
 
-        <div class="editor-container">
-            <div class="panel">
-                <div class="panel-header">
-                    <h2>Markdown Input</h2>
-                    <div class="btn-group">
-                        <button id="upload-btn" class="btn btn-secondary">Upload .md</button>
-                        <button id="clear-btn" class="btn btn-secondary">Clear</button>
-                    </div>
-                    <input type="file" id="file-input" accept=".md,.markdown,.txt" style="display:none;">
-                </div>
-                <textarea id="markdown-input" placeholder="Enter your Markdown here..."># Welcome to MD2HTML
+      <form class="settings" id="converter-settings" aria-label="Conversion settings">
+        <label>Document title<input id="title-input" name="title" type="text" value="Converted Document" maxlength="200"></label>
+        <label>Output theme<select id="theme-select" name="theme"><option value="light">Light</option><option value="dark">Dark</option></select></label>
+        <label>Output type<select id="output-select" name="output"><option value="document">Complete document</option><option value="fragment">HTML fragment</option></select></label>
+        <label class="check"><input id="toc-checkbox" type="checkbox" checked> Include table of contents</label>
+      </form>
 
-This is a **live preview** markdown converter.
+      <div class="workspace">
+        <section class="panel input-panel" aria-labelledby="input-heading">
+          <header class="panel-header"><div><h2 id="input-heading">Markdown</h2><p id="input-stats" aria-live="polite">0 characters · 0 words · 0 lines</p></div>
+            <div class="actions secondary-actions"><button type="button" id="upload-btn">Upload file</button><button type="button" id="sample-btn">Load sample</button><button type="button" id="clear-btn">Clear</button></div>
+          </header>
+          <input class="visually-hidden" type="file" id="file-input" accept=".md,.markdown,.txt,text/markdown,text/plain">
+          <label class="visually-hidden" for="markdown-input">Markdown input</label>
+          <textarea id="markdown-input" maxlength="750000" spellcheck="false" placeholder="# Start writing Markdown"></textarea>
+        </section>
 
-## Features
+        <section class="panel output-panel" aria-labelledby="output-heading">
+          <header class="panel-header output-header"><div><h2 id="output-heading">Output</h2><div class="tabs" role="tablist" aria-label="Output view"><button id="preview-tab" class="tab active" type="button" role="tab" aria-selected="true" aria-controls="preview-container">Preview</button><button id="source-tab" class="tab" type="button" role="tab" aria-selected="false" aria-controls="source-output">HTML source</button></div></div>
+            <div class="actions"><button type="button" id="copy-btn">Copy HTML</button><button type="button" id="download-btn" class="primary">Download complete HTML</button></div>
+          </header>
+          <div id="preview-container" class="output-view"><iframe id="preview-frame" sandbox="" title="Rendered HTML preview"></iframe></div>
+          <pre id="source-output" class="output-view source-view" tabindex="0" hidden><code></code></pre>
+          <div id="empty-state" class="empty-state">Enter Markdown to create a preview.</div>
+        </section>
+      </div>
+      <div class="status-row"><p id="status" role="status" aria-live="polite">Ready</p><p>Drafts are saved in this browser.</p></div>
+    </section>
 
-- Real-time conversion
-- **Bold** and *italic* text
-- [Links](https://github.com/Crespo1301/MarkdownToHTML)
-- Code blocks with syntax highlighting
+    <div class="ad-region" hidden aria-hidden="true" data-ad-slot="content-after-tool"><span>Advertisement</span></div>
 
-## Code Example
-```python
-def hello():
-    print("Hello, World!")
-```
+    <section class="content-section answer-first">
+      <h2>How to convert Markdown to HTML</h2>
+      <ol><li>Paste Markdown into the editor or upload a <code>.md</code>, <code>.markdown</code>, or <code>.txt</code> file.</li><li>Choose a theme, table of contents, and output type.</li><li>Check the preview or raw HTML source.</li><li>Copy the selected output or download a complete styled HTML file.</li></ol>
+    </section>
 
-## Lists
+    <section id="syntax" class="content-section">
+      <h2>Supported Markdown syntax</h2>
+      <p>The converter supports headings, paragraphs, emphasis, links, images, ordered and unordered lists, blockquotes, horizontal rules, inline code, and fenced or indented code blocks. Raw HTML is escaped for safety. Tables, task lists, and strikethrough are not currently interpreted as extended Markdown.</p>
+      <div class="example"><pre><code># Article title
 
-1. First item
-2. Second item
-3. Third item
+Write **bold text**, *emphasis*, and [safe links](https://example.com).
 
-> This is a blockquote. It looks great!
+```js
+console.log("Code stays code");
+```</code></pre><div><h3>Common uses</h3><ul><li>Move AI-generated Markdown into a CMS</li><li>Prepare blog posts and documentation</li><li>Create portable styled HTML files</li><li>Inspect the markup generated from Markdown</li></ul></div></div>
+    </section>
 
----
+    <section class="content-section split-copy">
+      <div><h2>Fragment or complete document?</h2><p>An <strong>HTML fragment</strong> contains only the converted content, which is useful inside an existing page or CMS editor. A <strong>complete document</strong> includes the doctype, head, embedded theme styles, and body, so it can open as a standalone <code>.html</code> file.</p></div>
+      <div><h2>Privacy and security</h2><p>Markdown is sent to the conversion API and processed in memory. This application does not use a document database or intentionally store submitted content. The preview is sandboxed, raw HTML is escaped, unsafe URL schemes are rejected, and browser storage keeps your draft only on your device. Avoid submitting sensitive information to any online converter.</p></div>
+    </section>
 
-*Built by Carlos Crespo*</textarea>
-            </div>
+    <section id="faq" class="content-section faq" itemscope itemtype="https://schema.org/FAQPage">
+      <h2>Frequently asked questions</h2>
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Is this Markdown converter free?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Yes. The web converter is free to use and the Python CLI and library are open source under the MIT License.</p></div></details>
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Does conversion happen entirely in my browser?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">No. Markdown is sent to a serverless API for conversion. The application has no document database and does not intentionally store submitted documents.</p></div></details>
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Can the preview run scripts from Markdown?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">No. Raw HTML is escaped and the preview iframe is sandboxed without script permissions.</p></div></details>
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">What is copied by Copy HTML?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Copy HTML copies the output type currently selected. Choose HTML fragment for embedding or complete document for a standalone page.</p></div></details>
+    </section>
+  </main>
 
-            <div class="panel">
-                <div class="panel-header">
-                    <h2>HTML Preview</h2>
-                    <div class="btn-group">
-                        <button id="copy-btn" class="btn btn-secondary">Copy HTML</button>
-                        <button id="download-btn" class="btn btn-primary">Download</button>
-                    </div>
-                </div>
-                <div id="preview-container">
-                    <iframe id="preview-frame" title="HTML Preview"></iframe>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <p>
-                Built by <a href="https://carloscrespo.info" target="_blank">Carlos Crespo</a> |
-                <a href="https://github.com/Crespo1301/MarkdownToHTML" target="_blank">GitHub</a>
-            </p>
-        </footer>
-    </div>
-
-    <div id="toast" class="toast"></div>
-
-    <script src="/static/js/app.js"></script>
+  <footer class="site-footer"><p>Built by <a href="https://carloscrespo.info" rel="noopener noreferrer">Carlos Crespo / CSolutions</a>. <a href="https://github.com/Crespo1301/MarkdownToHTML" rel="noopener noreferrer">View source on GitHub</a>.</p><nav aria-label="Footer navigation"><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/static/js/app.js" defer></script>
 </body>
 </html>

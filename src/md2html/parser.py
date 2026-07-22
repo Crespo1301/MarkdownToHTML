@@ -22,7 +22,9 @@ Supported Markdown Syntax:
 Author: Carlos Crespo
 """
 
+import html
 import re
+from urllib.parse import urlsplit
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import List, Optional, Tuple
@@ -601,12 +603,16 @@ class MarkdownParser:
             HTML anchor tag string.
         """
         text = match.group(1)
-        url = match.group(2)
+        url = self._sanitize_url(match.group(2), image=False)
         title = match.group(3)
+
+        if url is None:
+            return text
         
         if title:
-            return f'<a href="{url}" title="{title}">{text}</a>'
-        return f'<a href="{url}">{text}</a>'
+            safe_title = html.escape(html.unescape(title), quote=True)
+            return f'<a href="{url}" title="{safe_title}" rel="noopener noreferrer">{text}</a>'
+        return f'<a href="{url}" rel="noopener noreferrer">{text}</a>'
     
     def _replace_image(self, match: re.Match) -> str:
         """
@@ -618,13 +624,33 @@ class MarkdownParser:
         Returns:
             HTML img tag string.
         """
-        alt = match.group(1)
-        src = match.group(2)
+        alt = html.escape(html.unescape(match.group(1)), quote=True)
+        src = self._sanitize_url(match.group(2), image=True)
         title = match.group(3)
+
+        if src is None:
+            return alt
         
         if title:
-            return f'<img src="{src}" alt="{alt}" title="{title}">'
+            safe_title = html.escape(html.unescape(title), quote=True)
+            return f'<img src="{src}" alt="{alt}" title="{safe_title}">'
         return f'<img src="{src}" alt="{alt}">'
+
+    @staticmethod
+    def _sanitize_url(raw_url: str, image: bool) -> Optional[str]:
+        """Return an attribute-safe URL or ``None`` for unsafe schemes."""
+        decoded = html.unescape(raw_url).strip()
+        if any(ord(character) < 32 for character in decoded):
+            return None
+
+        parsed = urlsplit(decoded)
+        scheme = parsed.scheme.lower()
+        allowed_schemes = {"http", "https"} if image else {"http", "https", "mailto"}
+        if scheme and scheme not in allowed_schemes:
+            return None
+        if decoded.startswith("//"):
+            return None
+        return html.escape(decoded, quote=True)
     
     def _escape_html(self, text: str) -> str:
         """

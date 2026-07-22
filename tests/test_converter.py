@@ -288,8 +288,7 @@ class TestEdgeCases:
             title="Tom & Jerry's <Adventure>",
             include_toc=False
         )
-        # Title should be in the output (escaping handled by browser)
-        assert "Tom & Jerry" in html
+        assert "Tom &amp; Jerry&#x27;s &lt;Adventure&gt;" in html
 
 
 # Run tests if executed directly

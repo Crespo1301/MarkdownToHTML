@@ -9,7 +9,7 @@ GitHub: https://github.com/Crespo1301/MarkdownToHTML
 License: MIT
 """
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "Carlos Crespo"
 
 # Public API exports
