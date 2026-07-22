@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler
 import json
 import mimetypes
 from pathlib import Path
+import secrets
 import sys
 from urllib.parse import unquote, urlsplit
 
@@ -18,16 +19,26 @@ MAX_REQUEST_BYTES = 1_000_000
 MAX_MARKDOWN_CHARS = 750_000
 MAX_TITLE_CHARS = 200
 SECURITY_HEADERS = {
-    "Content-Security-Policy": (
-        "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; "
-        "form-action 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; "
-        "connect-src 'self'; font-src 'self'; upgrade-insecure-requests"
-    ),
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
     "X-Frame-Options": "DENY",
 }
+
+DEFAULT_CSP = (
+    "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; "
+    "form-action 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; "
+    "script-src 'self'; connect-src 'self'; font-src 'self'; upgrade-insecure-requests"
+)
+
+ADSENSE_CSP = (
+    "default-src 'self' https: data: blob:; base-uri 'none'; object-src 'none'; "
+    "frame-ancestors 'none'; form-action 'self'; "
+    "script-src 'nonce-{nonce}' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' https: http:; "
+    "style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; "
+    "connect-src 'self' https:; frame-src https:; font-src 'self' https: data:; "
+    "upgrade-insecure-requests"
+)
 
 
 def convert_payload(data):
@@ -75,18 +86,26 @@ def convert_payload(data):
 class handler(BaseHTTPRequestHandler):
     """Serve public pages, static assets, and the conversion API."""
 
-    def _send_headers(self, status, content_type, length, cache_control):
+    def _send_headers(self, status, content_type, length, cache_control, csp=DEFAULT_CSP):
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(length))
         self.send_header("Cache-Control", cache_control)
+        self.send_header("Content-Security-Policy", csp)
         for name, value in SECURITY_HEADERS.items():
             self.send_header(name, value)
         self.end_headers()
 
-    def _send(self, status, body, content_type="text/plain; charset=utf-8", cache_control="no-store"):
+    def _send(
+        self,
+        status,
+        body,
+        content_type="text/plain; charset=utf-8",
+        cache_control="no-store",
+        csp=DEFAULT_CSP,
+    ):
         payload = body.encode("utf-8") if isinstance(body, str) else body
-        self._send_headers(status, content_type, len(payload), cache_control)
+        self._send_headers(status, content_type, len(payload), cache_control, csp)
         if self.command != "HEAD":
             self.wfile.write(payload)
 
@@ -109,6 +128,22 @@ class handler(BaseHTTPRequestHandler):
             guessed += "; charset=utf-8"
         self._send(status=200, body=payload, content_type=guessed, cache_control=cache_control)
 
+    def _serve_html(self, path, status=200, cache_control="public, max-age=0, must-revalidate"):
+        try:
+            template = path.read_text(encoding="utf-8")
+        except OSError:
+            self._send(500, "Unable to load page.")
+            return
+        nonce = secrets.token_urlsafe(24)
+        html = template.replace("{{CSP_NONCE}}", nonce)
+        self._send(
+            status,
+            html,
+            "text/html; charset=utf-8",
+            cache_control,
+            ADSENSE_CSP.format(nonce=nonce),
+        )
+
     def do_GET(self):
         path = urlsplit(self.path).path
         if path == "/robots.txt":
@@ -117,12 +152,15 @@ class handler(BaseHTTPRequestHandler):
         if path == "/sitemap.xml":
             self._serve_file(ROOT / "static" / "sitemap.xml", "application/xml", "public, max-age=3600")
             return
+        if path == "/ads.txt":
+            self._serve_file(ROOT / "static" / "ads.txt", "text/plain", "public, max-age=3600")
+            return
         if path.startswith("/static/"):
             relative = Path(unquote(path.removeprefix("/static/")))
             static_root = (ROOT / "static").resolve()
             candidate = (static_root / relative).resolve()
             if relative.is_absolute() or not candidate.is_relative_to(static_root) or not candidate.is_file():
-                self._send(404, (ROOT / "templates" / "404.html").read_text(), "text/html; charset=utf-8")
+                self._serve_html(ROOT / "templates" / "404.html", status=404, cache_control="no-store")
                 return
             self._serve_file(candidate)
             return
@@ -136,9 +174,9 @@ class handler(BaseHTTPRequestHandler):
         }
         template = pages.get(path.rstrip("/") or "/")
         if template:
-            self._serve_file(ROOT / "templates" / template, "text/html", "public, max-age=0, must-revalidate")
+            self._serve_html(ROOT / "templates" / template)
             return
-        self._send(404, (ROOT / "templates" / "404.html").read_text(), "text/html; charset=utf-8")
+        self._serve_html(ROOT / "templates" / "404.html", status=404, cache_control="no-store")
 
     def do_HEAD(self):
         self.do_GET()

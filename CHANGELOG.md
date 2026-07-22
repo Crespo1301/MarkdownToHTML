@@ -2,6 +2,16 @@
 
 All notable changes follow semantic versioning.
 
+## [Unreleased]
+
+### AdSense
+
+- Added the verified AdSense publisher script and authorized `ads.txt` entry.
+- Added nonce-based strict CSP handling for AdSense without removing framing,
+  base URI, object, or upgrade protections.
+- Updated the privacy disclosure while keeping visible ad placements disabled
+  until site approval.
+
 ## [2.0.0] - 2026-07-21
 
 ### Security

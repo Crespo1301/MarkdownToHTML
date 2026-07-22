@@ -3,6 +3,7 @@
 from http.client import HTTPConnection
 from http.server import HTTPServer
 import json
+import re
 from threading import Thread
 
 import pytest
@@ -76,6 +77,24 @@ def test_missing_route_returns_real_404(server):
     status, _, payload = request(server, "GET", "/not-real")
     assert status == 404
     assert b"Page not found" in payload
+
+
+def test_homepage_has_adsense_code_with_matching_csp_nonce(server):
+    status, headers, payload = request(server, "GET", "/")
+    html = payload.decode("utf-8")
+    nonce_match = re.search(r'<script nonce="([^"]+)" async src="https://pagead2\.googlesyndication\.com/', html)
+    assert status == 200
+    assert nonce_match
+    assert f"'nonce-{nonce_match.group(1)}'" in headers["Content-Security-Policy"]
+    assert "ca-pub-9248605150391626" in html
+    assert "{{CSP_NONCE}}" not in html
+
+
+def test_ads_txt_exposes_authorized_publisher(server):
+    status, headers, payload = request(server, "GET", "/ads.txt")
+    assert status == 200
+    assert headers["Content-Type"].startswith("text/plain")
+    assert payload == b"google.com, pub-9248605150391626, DIRECT, f08c47fec0942fa0\n"
 
 
 def test_static_path_traversal_is_rejected(server):
