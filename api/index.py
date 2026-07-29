@@ -237,6 +237,9 @@ class handler(BaseHTTPRequestHandler):
         pages = {
             "/": "index.html",
             "/about": "about.html",
+            "/how-to-use": "how-to-use.html",
+            "/examples": "examples.html",
+            "/faq": "faq.html",
             "/privacy": "privacy.html",
             "/terms": "terms.html",
             "/support": "support.html",

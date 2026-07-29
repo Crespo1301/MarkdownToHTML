@@ -12,8 +12,33 @@
   <script nonce="{{CSP_NONCE}}" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9248605150391626" crossorigin="anonymous"></script>
 </head>
 <body>
-  <header class="site-header"><a class="brand" href="/" aria-label="Markdown to HTML Converter, a CSolutions product, home"><img class="brand-mark" src="/static/csolutions-mark.png" width="44" height="44" alt=""><span class="brand-name">MD<span aria-hidden="true">→</span>HTML</span><span class="brand-owner">by CSolutions</span></a><nav><a href="/">Converter</a><a href="/support">Support</a></nav></header>
-  <main class="prose-page"><h1>About the converter</h1><p>Markdown to HTML Converter is a free public CSolutions utility created by Carlos Crespo. It combines a browser interface with an open-source Python CLI and library.</p><h2>Why it exists</h2><p>Markdown is convenient for writing, but websites and content management systems often need HTML. This tool makes that handoff visible and practical: edit Markdown, inspect the rendered output, view the source, and take the format you need.</p><h2>Open source</h2><p>Review the code, report an issue, or run the converter locally in the <a href="https://github.com/Crespo1301/MarkdownToHTML" rel="noopener noreferrer">GitHub repository</a>.</p></main>
-  <footer class="site-footer"><p>Built by <a href="https://carloscrespo.info" rel="noopener noreferrer">CSolutions</a>.</p><nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
+  <header class="site-header"><a class="brand" href="/" aria-label="Markdown to HTML Converter, a CSolutions product, home"><img class="brand-mark" src="/static/csolutions-mark.png" width="44" height="44" alt=""><span class="brand-name">MD<span aria-hidden="true">→</span>HTML</span><span class="brand-owner">by CSolutions</span></a><nav aria-label="Main navigation"><a href="/">Converter</a><a href="/how-to-use">How to use</a><a href="/examples">Examples</a><a href="/faq">FAQ</a></nav></header>
+  <main class="prose-page">
+    <h1>About the converter</h1>
+    <p>Markdown to HTML Converter is a free public utility built by <a href="https://carloscrespo.info" rel="noopener noreferrer">Carlos Crespo</a> under <a href="https://carloscrespo.info" rel="noopener noreferrer">CSolutions</a>. It pairs a browser interface with an open-source Python CLI and library, so the same parser that renders this page's preview is available to run on your own machine.</p>
+
+    <h2>Why it exists</h2>
+    <p>Markdown is convenient for writing — plain text, easy to version, easy to read even unrendered. But websites, content management systems, and documentation platforms often need HTML, and the handoff between the two is usually opaque: paste into some black-box tool and hope. This converter makes that step visible. You can see the exact HTML your Markdown produces, inspect it before you use it, and choose whether you need a small fragment or a complete standalone document.</p>
+
+    <h2>Who built it, and why</h2>
+    <p>CSolutions builds small, focused web tools and client sites. This converter started as an internal utility for moving Markdown notes and AI-drafted content into real pages, and was cleaned up, hardened, and released publicly because the same problem is common enough to be worth sharing. It is maintained alongside CSolutions' other public work — see <a href="https://carloscrespo.info" rel="noopener noreferrer">carloscrespo.info</a> for the rest.</p>
+
+    <h2>Who this is for</h2>
+    <ul>
+      <li><strong>Bloggers and writers</strong> moving Markdown from a note-taking app or an AI drafting tool into a CMS that expects HTML.</li>
+      <li><strong>Students and researchers</strong> turning Markdown notes or writeups into a single shareable HTML file, with no account or software install required.</li>
+      <li><strong>Developers</strong> who need a quick, escaped HTML fragment for documentation, a README preview, or a component — without pulling in a Markdown library for a one-off task.</li>
+      <li><strong>Small businesses</strong> producing a one-off styled page, email body, or handout from Markdown, without standing up a full site build for it.</li>
+    </ul>
+
+    <h2>How it's built</h2>
+    <p>The parser and converter are a zero-runtime-dependency Python package: no third-party Markdown library, so the exact escaping and URL-scheme rules are visible in one place rather than inherited from an external dependency. The web interface sends Markdown to that same code running as a small serverless API, renders the result in a sandboxed preview, and never intentionally stores what you submit. See <a href="/privacy">Privacy</a> for the full data-handling picture.</p>
+
+    <h2>Open source</h2>
+    <p>Review the code, report an issue, or run the converter locally in the <a href="https://github.com/Crespo1301/MarkdownToHTML" rel="noopener noreferrer">GitHub repository</a>, licensed under MIT.</p>
+
+    <p><a class="text-button" href="/#converter">Open the converter</a></p>
+  </main>
+  <footer class="site-footer"><p>Built by <a href="https://carloscrespo.info" rel="noopener noreferrer">Carlos Crespo / CSolutions</a>.</p><nav aria-label="Footer navigation"><a href="/">Converter</a><a href="/how-to-use">How to use</a><a href="/examples">Examples</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
 </body>
 </html>

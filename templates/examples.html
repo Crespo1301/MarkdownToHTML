@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Markdown Examples and HTML Output | Markdown to HTML Converter</title>
+  <meta name="description" content="Common Markdown examples — headings, emphasis, links, images, lists, code blocks, blockquotes, and line breaks — with the exact HTML each one produces.">
+  <link rel="canonical" href="https://mdtohtmlconverter.com/examples">
+  <link rel="icon" href="/static/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <meta name="google-adsense-account" content="ca-pub-9248605150391626">
+  <script nonce="{{CSP_NONCE}}" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9248605150391626" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/" aria-label="Markdown to HTML Converter, a CSolutions product, home"><img class="brand-mark" src="/static/csolutions-mark.png" width="44" height="44" alt=""><span class="brand-name">MD<span aria-hidden="true">→</span>HTML</span><span class="brand-owner">by CSolutions</span></a><nav aria-label="Main navigation"><a href="/">Converter</a><a href="/how-to-use">How to use</a><a href="/faq">FAQ</a><a href="/about">About</a></nav></header>
+  <main class="prose-page">
+    <p class="eyebrow">Examples</p>
+    <h1>Markdown examples and their HTML output</h1>
+    <p>Each pair below shows real Markdown next to the exact HTML fragment the converter produces for it. Paste any of the input into the <a href="/#converter">converter</a> to see it rendered live.</p>
+
+    <h2>Headings</h2>
+    <div class="example"><div><h3>Markdown</h3><pre><code># Getting Started
+
+## Installation
+
+Follow the steps below.</code></pre></div><div><h3>HTML</h3><pre><code>&lt;h1 id="getting-started"&gt;Getting Started&lt;/h1&gt;
+
+&lt;h2 id="installation"&gt;Installation&lt;/h2&gt;
+
+&lt;p&gt;Follow the steps below.&lt;/p&gt;</code></pre></div></div>
+    <p>Each heading gets a unique <code>id</code>, even if two headings share the same text — the second one becomes <code>installation-2</code>, and so on.</p>
+
+    <h2>Bold, italic, and both</h2>
+    <div class="example"><div><h3>Markdown</h3><pre><code>This is **bold**, this is *italic*,
+and this is ***both***.</code></pre></div><div><h3>HTML</h3><pre><code>&lt;p&gt;This is &lt;strong&gt;bold&lt;/strong&gt;, this is &lt;em&gt;italic&lt;/em&gt;,
+and this is &lt;strong&gt;&lt;em&gt;both&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;</code></pre></div></div>
+
+    <h2>Links and images</h2>
+    <div class="example"><div><h3>Markdown</h3><pre><code>Read the [documentation](https://example.com/docs)
+or view the diagram below.
+
+![Architecture diagram](https://example.com/diagram.png)</code></pre></div><div><h3>HTML</h3><pre><code>&lt;p&gt;Read the &lt;a href="https://example.com/docs"
+rel="noopener noreferrer"&gt;documentation&lt;/a&gt;
+or view the diagram below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://example.com/diagram.png"
+alt="Architecture diagram"&gt;&lt;/p&gt;</code></pre></div></div>
+    <p>External links get <code>rel="noopener noreferrer"</code> automatically. Only safe HTTP, HTTPS, mailto, relative, and fragment URLs are turned into active links or images — schemes like <code>javascript:</code> or <code>data:</code> are rejected.</p>
+
+    <h2>Lists</h2>
+    <div class="example"><div><h3>Markdown</h3><pre><code>- First item
+- Second item
+- Third item
+
+1. Read the input
+2. Preview the output
+3. Copy or download</code></pre></div><div><h3>HTML</h3><pre><code>&lt;ul&gt;
+&lt;li&gt;First item&lt;/li&gt;
+&lt;li&gt;Second item&lt;/li&gt;
+&lt;li&gt;Third item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Read the input&lt;/li&gt;
+&lt;li&gt;Preview the output&lt;/li&gt;
+&lt;li&gt;Copy or download&lt;/li&gt;
+&lt;/ol&gt;</code></pre></div></div>
+
+    <h2>Inline code and fenced code blocks</h2>
+    <div class="example"><div><h3>Markdown</h3><pre><code>Use the `convert()` function like this:
+
+```python
+def convert(markdown):
+    return render(markdown)
+```</code></pre></div><div><h3>HTML</h3><pre><code>&lt;p&gt;Use the &lt;code&gt;convert()&lt;/code&gt; function
+like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="language-python"&gt;def convert(markdown):
+    return render(markdown)&lt;/code&gt;&lt;/pre&gt;</code></pre></div></div>
+    <p>Text inside inline code or a fenced code block is never reprocessed as bold or italic, so <code>`**not bold**`</code> renders as literal text instead of <code>&lt;strong&gt;</code>.</p>
+
+    <h2>Blockquotes</h2>
+    <div class="example"><div><h3>Markdown</h3><pre><code>&gt; Markdown makes writing portable.
+&gt; It renders the same everywhere.</code></pre></div><div><h3>HTML</h3><pre><code>&lt;blockquote&gt;
+&lt;p&gt;Markdown makes writing portable. It renders
+the same everywhere.&lt;/p&gt;
+&lt;/blockquote&gt;</code></pre></div></div>
+
+    <h2>Hard line breaks</h2>
+    <div class="example"><div><h3>Markdown</h3><pre><code>Roses are red,··
+Violets are blue.</code></pre></div><div><h3>HTML</h3><pre><code>&lt;p&gt;Roses are red,&lt;br&gt;Violets are blue.&lt;/p&gt;</code></pre></div></div>
+    <p>Two or more trailing spaces before a newline (shown above as <code>··</code>) produce a <code>&lt;br&gt;</code> instead of starting a new paragraph.</p>
+
+    <h2>What's not interpreted</h2>
+    <p>Tables, task lists (<code>- [ ]</code>), and strikethrough (<code>~~text~~</code>) are not currently part of the supported syntax and pass through as literal text. Raw HTML in your Markdown is escaped rather than rendered.</p>
+
+    <p><a class="text-button" href="/#converter">Try these in the converter</a></p>
+  </main>
+  <footer class="site-footer"><p>Built by <a href="https://carloscrespo.info" rel="noopener noreferrer">Carlos Crespo / CSolutions</a>.</p><nav aria-label="Footer navigation"><a href="/">Converter</a><a href="/how-to-use">How to use</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
+</body>
+</html>

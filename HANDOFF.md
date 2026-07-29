@@ -2,12 +2,53 @@
 
 ## Release
 
-- Current: `v2.1.2` — functionality, security, accessibility, content,
-  AdSense site verification, and stale-output protection on top of the live
-  production converter.
+- Current: `v2.2.0` — added `/how-to-use`, `/examples`, and `/faq` content
+  pages plus an expanded `/about`, targeting the AdSense "site needs more
+  original, helpful content" gap, on top of the existing functionality,
+  security, accessibility, and AdSense-verification work.
 - Canonical origin in code: `https://mdtohtmlconverter.com` (live)
 - Existing Vercel project: `markdown-to-html`
 - Existing production alias: `https://markdown-to-html-iota.vercel.app`
+
+## v2.2.0 decisions
+
+- AdSense had not approved the site under the generic "Meet AdSense program
+  policies" reason. Rather than guess further, treated it as a content-depth
+  problem: added three new standalone pages instead of stuffing more content
+  onto the homepage, so the converter stays the focus and the new material
+  reads as genuinely useful rather than padding.
+- Generated every "Markdown in → HTML out" example shown on `/how-to-use`
+  and `/examples` by actually running the parser/converter locally, rather
+  than hand-writing plausible-looking output — this matters because the
+  parser has real quirks (e.g. nested lists don't nest inside the parent
+  `<li>`) that a fabricated example would have hidden or gotten wrong. The
+  nested-list case was deliberately left out of the public examples in favor
+  of a flat list, since showing it without explanation would read as a bug
+  report rather than documentation.
+- Chose `/how-to-use` over the suggested `/guides/markdown-to-html` — a flat
+  path fits the router's existing flat page-table pattern and there's no
+  second guide planned that would justify a `/guides/` segment.
+- Normalized every page's footer nav to list the whole site (previously each
+  page selectively omitted itself and one or two siblings, which was an
+  inconsistent, error-prone pattern to maintain as pages were added).
+- Did not touch `static/js/app.js`, the parser/converter, CSP, or ads.txt —
+  out of scope for a content pass, and the brief was explicit about
+  preserving sanitizer/parser behavior and security posture.
+- Re-ran the three named adversarial-input performance tests; all pass
+  under the existing `MAX_EMPHASIS_SPAN` bound from v2.1.0 with no
+  regression, so no parser change was needed this round.
+
+## Launch campaign assets
+
+- Local source: `marketing/social/markdown-to-html-launch/`
+- Deliverables: Instagram carousel, Story/Reel cover, TikTok carousel,
+  TikTok contact sheet, TikTok safe-zone proof sheet, editable HTML/CSS source,
+  and campaign ZIP.
+- The campaign is CSolutions-branded, uses solid colors only, and is built
+  around real production screenshots from `v2.1.2`.
+- Review `marketing/social/markdown-to-html-launch/HANDOFF.md` before posting
+  or changing copy. Critical text in TikTok exports is kept inside the
+  documented safe frame; proof exports are for QA only and should not be posted.
 
 ## v2.1.2 decisions
 

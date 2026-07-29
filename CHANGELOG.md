@@ -2,6 +2,40 @@
 
 All notable changes follow semantic versioning.
 
+## [2.2.0] - 2026-07-29
+
+### Content
+
+- Added three new public pages to give the site the depth and originality
+  Google's AdSense review expects: `/how-to-use` (a step-by-step conversion
+  guide), `/examples` (common Markdown inputs paired with their exact,
+  freshly-generated HTML output), and `/faq` (an expanded question set
+  covering privacy, browser requirements, downloads, copying, upload
+  limits, and unsupported syntax, with `FAQPage` structured data).
+- Expanded `/about` with a "Who built it, and why" section and a "Who this
+  is for" use-case list (bloggers/writers, students/researchers,
+  developers, small businesses), and added a matching compact use-case
+  list to the homepage's syntax section.
+- Linked the new pages from the header nav, footer nav, and relevant
+  homepage sections on every public page, and normalized every page's
+  footer to list the full site instead of each page selectively omitting
+  itself and its siblings.
+
+### Technical
+
+- Routed `/how-to-use`, `/examples`, and `/faq` in `api/index.py`'s page
+  table and added them to `sitemap.xml`; `robots.txt` already allowed all
+  non-`/api/` paths so no change was needed there.
+- Added route tests confirming the three new pages serve 200 with expected
+  `<h1>` content, carry the AdSense verification tag, and appear in
+  `sitemap.xml`.
+
+### Testing
+
+- Re-verified the three adversarial-input performance tests named in the
+  AdSense follow-up work — they already pass (no ReDoS regression since
+  the v2.1.0 emphasis-span fix). Full suite: 127 passed.
+
 ## [2.1.2] - 2026-07-22
 
 ### Fixed
@@ -124,6 +158,7 @@ All notable changes follow semantic versioning.
 - Removed Flask requirements and tracked generated artifacts.
 - Aligned package, documentation, and release version at 2.0.0.
 
+[2.2.0]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.2.0
 [2.1.2]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.2
 [2.1.1]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.1
 [2.1.0]: https://github.com/Crespo1301/MarkdownToHTML/releases/tag/v2.1.0

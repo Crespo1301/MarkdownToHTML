@@ -22,7 +22,7 @@
   <header class="site-header">
     <a class="brand" href="/" aria-label="Markdown to HTML Converter, a CSolutions product, home"><img class="brand-mark" src="/static/csolutions-mark.png" width="44" height="44" alt=""><span class="brand-name">MD<span aria-hidden="true">→</span>HTML</span><span class="brand-owner">by CSolutions</span></a>
     <nav aria-label="Main navigation">
-      <a href="#syntax">Syntax</a><a href="#faq">FAQ</a><a href="/about">About</a><a href="/support">Support</a>
+      <a href="/how-to-use">How to use</a><a href="/examples">Examples</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/support">Support</a>
     </nav>
   </header>
 
@@ -81,7 +81,7 @@ Write **bold text**, *emphasis*, and [safe links](https://example.com).
 
 ```js
 console.log("Code stays code");
-```</code></pre><div><h3>Common uses</h3><ul><li>Move AI-generated Markdown into a CMS</li><li>Prepare blog posts and documentation</li><li>Create portable styled HTML files</li><li>Inspect the markup generated from Markdown</li></ul></div></div>
+```</code></pre><div><h3>Who uses it</h3><ul><li><strong>Bloggers &amp; writers</strong> — move Markdown into a CMS</li><li><strong>Students &amp; researchers</strong> — turn notes into a shareable file</li><li><strong>Developers</strong> — grab a quick escaped fragment for docs</li><li><strong>Small businesses</strong> — produce a one-off styled page</li></ul><p><a href="/how-to-use">Read the full how-to guide</a> · <a href="/examples">See more examples</a></p></div></div>
     </section>
 
     <section class="content-section split-copy">
@@ -95,10 +95,11 @@ console.log("Code stays code");
       <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Does conversion happen entirely in my browser?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">No. Markdown is sent to a serverless API for conversion. The application has no document database and does not intentionally store submitted documents.</p></div></details>
       <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Can the preview run scripts from Markdown?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">No. Raw HTML is escaped and the preview iframe is sandboxed without script permissions.</p></div></details>
       <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">What is copied by Copy HTML?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Copy HTML copies the output type currently selected. Choose HTML fragment for embedding or complete document for a standalone page.</p></div></details>
+      <p><a href="/faq">See all frequently asked questions</a></p>
     </section>
   </main>
 
-  <footer class="site-footer"><p>Built by <a href="https://carloscrespo.info" rel="noopener noreferrer">Carlos Crespo / CSolutions</a>. <a href="https://github.com/Crespo1301/MarkdownToHTML" rel="noopener noreferrer">View source on GitHub</a>.</p><nav aria-label="Footer navigation"><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
+  <footer class="site-footer"><p>Built by <a href="https://carloscrespo.info" rel="noopener noreferrer">Carlos Crespo / CSolutions</a>. <a href="https://github.com/Crespo1301/MarkdownToHTML" rel="noopener noreferrer">View source on GitHub</a>.</p><nav aria-label="Footer navigation"><a href="/how-to-use">How to use</a><a href="/examples">Examples</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script nonce="{{CSP_NONCE}}" src="/static/js/app.js" defer></script>
 </body>

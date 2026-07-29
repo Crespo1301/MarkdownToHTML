@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FAQ | Markdown to HTML Converter</title>
+  <meta name="description" content="Answers about Markdown support, privacy, browser requirements, downloads, copying, and file limits for the Markdown to HTML Converter.">
+  <link rel="canonical" href="https://mdtohtmlconverter.com/faq">
+  <link rel="icon" href="/static/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <meta name="google-adsense-account" content="ca-pub-9248605150391626">
+  <script nonce="{{CSP_NONCE}}" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9248605150391626" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/" aria-label="Markdown to HTML Converter, a CSolutions product, home"><img class="brand-mark" src="/static/csolutions-mark.png" width="44" height="44" alt=""><span class="brand-name">MD<span aria-hidden="true">→</span>HTML</span><span class="brand-owner">by CSolutions</span></a><nav aria-label="Main navigation"><a href="/">Converter</a><a href="/how-to-use">How to use</a><a href="/examples">Examples</a><a href="/about">About</a></nav></header>
+  <main class="prose-page">
+    <p class="eyebrow">FAQ</p>
+    <h1>Frequently asked questions</h1>
+
+    <section class="faq" itemscope itemtype="https://schema.org/FAQPage">
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Is this Markdown converter free?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Yes. The web converter is free, requires no sign-in or account, and the Python CLI and library behind it are open source under the MIT License.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Does conversion happen in my browser or on a server?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Markdown is sent to a serverless conversion API and processed in memory to build the HTML response. There is no document database, and submitted content is not intentionally stored or logged. See the Privacy page for the full picture.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Do I need JavaScript enabled to use it?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Yes. The editor, preview, and copy/download actions run in the browser and call the conversion API over JavaScript. Without JavaScript the page loads but the tool itself won't function — this is a single-page browser tool, not a server-rendered form.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Can the preview run scripts from my Markdown?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">No. Raw HTML in Markdown is escaped rather than rendered, and the preview is shown inside a sandboxed iframe with no script permissions, so pasted content can't execute code in your browser.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">What does "Copy HTML" actually copy?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Whichever output type is currently selected. Choose HTML fragment to copy just the converted content, or complete document to copy a full standalone HTML page with embedded theme styles.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">What does "Download complete HTML" save?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">A full, standalone HTML file with the doctype, head, embedded theme CSS, and body — regardless of whether Copy HTML is currently set to fragment or complete document. It always downloads a document you can open directly in a browser.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Is my draft saved anywhere?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">The editor saves your Markdown and settings in your browser's local storage so a refresh doesn't lose your work. That draft stays on your device only — it isn't sent anywhere until you actively convert it, and clearing your browser's site data removes it.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">What file types can I upload, and how large can they be?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">The uploader accepts .md, .markdown, and .txt files up to 750 KB, which matches the editor's Markdown character limit. Larger files should be split before converting.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Does it support tables, task lists, or strikethrough?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Not yet. The parser covers headings, emphasis, links, images, ordered and unordered lists, blockquotes, horizontal rules, inline code, and fenced or indented code blocks. Extended syntax like tables, task lists, and strikethrough passes through as literal text instead of being interpreted.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Why were some of my asterisks or underscores not turned into bold or italic?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Emphasized spans are capped at 200 characters as a defense against pathological input that could otherwise make the parser hang. A run of `**` or `*` longer than that is left as literal text instead of `<strong>`/`<em>`. This only affects unusually long uninterrupted emphasis spans, not normal writing.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Who is this converter useful for?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Bloggers and writers moving AI-generated or note-taking Markdown into a CMS; students and researchers turning notes into a shareable HTML file; developers who need a quick fragment for documentation or a component; and small businesses producing a one-off styled page without standing up a full site build.</p></div></details>
+
+      <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><summary itemprop="name">Is there a CLI or library version?</summary><div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer"><p itemprop="text">Yes. The same parser and converter that power this site are published as an open-source Python CLI and library. See the README in the GitHub repository for installation and usage.</p></div></details>
+    </section>
+
+    <p>Still have a question? Visit <a href="/support">Support</a> or open an issue in the <a href="https://github.com/Crespo1301/MarkdownToHTML" rel="noopener noreferrer">GitHub repository</a>.</p>
+  </main>
+  <footer class="site-footer"><p>Built by <a href="https://carloscrespo.info" rel="noopener noreferrer">Carlos Crespo / CSolutions</a>.</p><nav aria-label="Footer navigation"><a href="/">Converter</a><a href="/how-to-use">How to use</a><a href="/examples">Examples</a><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
+</body>
+</html>

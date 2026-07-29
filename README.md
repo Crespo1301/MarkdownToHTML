@@ -5,7 +5,7 @@ turning Markdown into an HTML fragment or a complete styled document.
 
 - Production URL: <https://mdtohtmlconverter.com>
 - Vercel project alias: <https://markdown-to-html-iota.vercel.app>
-- Version: `2.1.2`
+- Version: `2.2.0`
 
 ## Web converter
 
@@ -142,6 +142,23 @@ For visual changes, start the real local server and use the shared runner:
 /home/cresp3/scripts/visual-check.sh --desktop --url http://localhost:3000/ --out .visual-checks/desktop.png
 ```
 
+## Launch marketing collateral
+
+CSolutions launch assets for Instagram, Stories/Reels, and TikTok live in:
+
+```text
+marketing/social/markdown-to-html-launch/
+```
+
+That folder contains the editable HTML/CSS source, export scripts, social
+captions, alt text, motion notes, final PNG exports, TikTok safe-zone proofs,
+and a campaign ZIP. The assets are screenshot-led and use real production
+captures from `v2.1.2`; do not replace them with fabricated interface mocks.
+
+Before committing or reposting, review `marketing/social/markdown-to-html-launch/HANDOFF.md`
+for the approved CSolutions visual system, caption, safe-zone rules, and export
+settings.
+
 ## Security model
 
 - all Markdown HTML special characters are escaped
@@ -174,10 +191,19 @@ See [SECURITY-CHECKLIST.md](SECURITY-CHECKLIST.md) and
 api/index.py          Vercel HTTP entry point
 src/md2html/          Python parser, converter, styles, and CLI
 static/               Browser CSS, JavaScript, crawler files, and images
-templates/            Tool, legal, support, and 404 pages
+templates/            Tool, guide, legal, support, and 404 pages
 tests/                Parser, converter, API, and security tests
 examples/             Example Markdown inputs
 ```
+
+## Public pages
+
+- `/` — the converter
+- `/how-to-use` — step-by-step conversion guide
+- `/examples` — common Markdown inputs and their exact HTML output
+- `/faq` — expanded frequently asked questions
+- `/about` — why the tool exists, who built it, and who it's for
+- `/privacy`, `/terms`, `/support` — legal and contact pages
 
 ## License and author
 

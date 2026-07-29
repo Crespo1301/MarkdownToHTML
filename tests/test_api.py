@@ -101,7 +101,19 @@ def test_homepage_has_adsense_code_with_matching_csp_nonce(server):
     )
 
 
-@pytest.mark.parametrize("path", ["/", "/about", "/privacy", "/terms", "/support"])
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/",
+        "/about",
+        "/how-to-use",
+        "/examples",
+        "/faq",
+        "/privacy",
+        "/terms",
+        "/support",
+    ],
+)
 def test_adsense_verification_meta_tag_present_on_every_public_page(server, path):
     status, _, payload = request(server, "GET", path)
     assert status == 200
@@ -109,6 +121,32 @@ def test_adsense_verification_meta_tag_present_on_every_public_page(server, path
         '<meta name="google-adsense-account" content="ca-pub-9248605150391626">'
         in payload.decode("utf-8")
     )
+
+
+@pytest.mark.parametrize(
+    "path,expected_title",
+    [
+        ("/how-to-use", "<h1>How to convert Markdown to HTML</h1>"),
+        ("/examples", "<h1>Markdown examples and their HTML output</h1>"),
+        ("/faq", "<h1>Frequently asked questions</h1>"),
+    ],
+)
+def test_new_content_pages_serve_expected_html(server, path, expected_title):
+    status, headers, payload = request(server, "GET", path)
+    assert status == 200
+    assert headers["Content-Type"].startswith("text/html")
+    html = payload.decode("utf-8")
+    assert expected_title in html
+    assert "{{CSP_NONCE}}" not in html
+
+
+def test_sitemap_lists_new_content_pages(server):
+    status, headers, payload = request(server, "GET", "/sitemap.xml")
+    assert status == 200
+    assert headers["Content-Type"].startswith("application/xml")
+    xml = payload.decode("utf-8")
+    for path in ("/how-to-use", "/examples", "/faq"):
+        assert f"https://mdtohtmlconverter.com{path}</loc>" in xml
 
 
 def test_ads_txt_exposes_authorized_publisher(server):
