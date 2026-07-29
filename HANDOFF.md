@@ -10,6 +10,21 @@
 - Existing Vercel project: `markdown-to-html`
 - Existing production alias: `https://markdown-to-html-iota.vercel.app`
 
+## AdSense status (2026-07-29)
+
+- Google Search Console domain property is verified (confirmed by Carlos).
+  `sitemap.xml` — now including `/how-to-use`, `/examples`, and `/faq` — has
+  been submitted; resubmit it in Search Console if it wasn't already
+  resubmitted after this release.
+- AdSense has **not** approved the site yet. v2.2.0's new content pages are
+  the response to the prior generic "meet program policies" rejection and
+  are intended to support a resubmission — they are not a guarantee of
+  approval. Do not claim or imply AdSense approval anywhere in the codebase
+  or public copy until Google's dashboard actually shows it.
+- Visible ad placements remain disabled (`.ad-region[hidden]` in
+  `templates/index.html`) until approval. See `ADSENSE.md` for the exact
+  post-approval activation steps — do not skip ahead of them.
+
 ## v2.2.0 decisions
 
 - AdSense had not approved the site under the generic "Meet AdSense program
@@ -131,12 +146,14 @@ change), not as pending work.
    `https://mdtohtmlconverter.com`.
 9. Add a Domain property in Google Search Console. Copy Google's exact DNS TXT
    verification value into Porkbun, verify ownership, then submit
-   `https://mdtohtmlconverter.com/sitemap.xml`. **Still open** — confirm this
-   has actually been done; it is not verifiable from the codebase.
+   `https://mdtohtmlconverter.com/sitemap.xml`. Done — domain property
+   verified (confirmed 2026-07-29). Resubmit `sitemap.xml` after v2.2.0 so
+   Search Console picks up `/how-to-use`, `/examples`, and `/faq`.
 10. Update the Portfolio project URL only after the custom domain serves the
     production deployment successfully. Done — see
     `/home/cresp3/Portfolio/src/data/projects.ts`.
 11. Apply for AdSense only after the domain, content, legal pages, and support
     navigation are live. Follow `ADSENSE.md` after approval. **Still open** —
-    site is submitted for review; visible ad units remain disabled pending
-    Google's approval.
+    site is submitted for review; not yet approved. v2.2.0 added the content
+    depth intended to support a resubmission (see "AdSense status" above).
+    Visible ad units remain disabled until Google's approval.
