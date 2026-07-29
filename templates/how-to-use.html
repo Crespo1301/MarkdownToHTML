@@ -32,17 +32,17 @@ Follow the steps below.</code></pre></div><div><h3>HTML output</h3><pre><code>&l
     <p>Headings automatically get unique <code>id</code> attributes, which is what makes the table of contents and in-page anchor links work.</p>
 
     <h2>2. Choose your settings</h2>
-    <p>Above the editor you can set a document title, an output theme (light or dark), and whether to include a table of contents. These only affect the <strong>complete document</strong> output — an HTML fragment has no head, theme styles, or title.</p>
+    <p>Above the editor you can set a document title, an output theme (light or dark), and whether to include a table of contents. These only affect the <strong>complete document</strong> output; an HTML fragment has no head, theme styles, or title.</p>
 
     <h2>3. Pick fragment or complete document</h2>
     <p>Switch <strong>Output type</strong> depending on where the HTML is going:</p>
     <ul>
-      <li><strong>HTML fragment</strong> — just the converted content (headings, paragraphs, lists, and so on). Use this when pasting into a CMS editor, a static site generator, or an existing page.</li>
-      <li><strong>Complete document</strong> — a full <code>&lt;!doctype html&gt;</code> page with embedded theme CSS, ready to open as a standalone file or host directly.</li>
+      <li><strong>HTML fragment</strong>: just the converted content (headings, paragraphs, lists, and so on). Use this when pasting into a CMS editor, a static site generator, or an existing page.</li>
+      <li><strong>Complete document</strong>: a full <code>&lt;!doctype html&gt;</code> page with embedded theme CSS, ready to open as a standalone file or host directly.</li>
     </ul>
 
     <h2>4. Check the preview and the source</h2>
-    <p>The <strong>Preview</strong> tab renders your HTML inside a sandboxed iframe with scripting disabled, so you can see the visual result safely. The <strong>HTML source</strong> tab shows the exact markup that will be copied or downloaded — always worth a scan before you publish, especially for links and code blocks.</p>
+    <p>The <strong>Preview</strong> tab renders your HTML inside a sandboxed iframe with scripting disabled, so you can see the visual result safely. The <strong>HTML source</strong> tab shows the exact markup that will be copied or downloaded; always worth a scan before you publish, especially for links and code blocks.</p>
 
     <h2>5. Copy or download</h2>
     <p><strong>Copy HTML</strong> copies whichever output type is currently selected. <strong>Download complete HTML</strong> always saves a full standalone document, regardless of the output type toggle, so you get a working file even if you were viewing a fragment.</p>
@@ -54,12 +54,12 @@ and this is &lt;strong&gt;&lt;em&gt;both&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;</c
     <p>See the <a href="/examples">examples page</a> for links, images, lists, code blocks, blockquotes, and hard line breaks with their exact HTML output.</p>
 
     <h2>What isn't supported yet</h2>
-    <p>The parser covers standard Markdown: headings, emphasis, links, images, ordered and unordered lists, blockquotes, horizontal rules, inline code, and fenced or indented code blocks. Extended syntax — tables, task lists, and strikethrough — is not currently interpreted, and any raw HTML you paste is escaped rather than rendered, by design (see <a href="/privacy">Privacy</a> for why).</p>
+    <p>The parser covers standard Markdown: headings, emphasis, links, images, ordered and unordered lists, blockquotes, horizontal rules, inline code, and fenced or indented code blocks. Extended syntax (tables, task lists, and strikethrough) is not currently interpreted, and any raw HTML you paste is escaped rather than rendered, by design (see <a href="/privacy">Privacy</a> for why).</p>
 
     <h2>Before you publish</h2>
     <ul>
       <li>Read the HTML source tab once, especially if the Markdown came from an AI tool or another converter.</li>
-      <li>Check that image and link URLs are the ones you intended — the converter only allows safe HTTP, HTTPS, mailto, relative, and fragment URLs.</li>
+      <li>Check that image and link URLs are the ones you intended; the converter only allows safe HTTP, HTTPS, mailto, relative, and fragment URLs.</li>
       <li>If you're pasting into a CMS, use the HTML fragment output so you don't end up with a nested <code>&lt;html&gt;</code>/<code>&lt;body&gt;</code> inside your page.</li>
     </ul>
 
