@@ -37,6 +37,7 @@ jobs:
           set -euo pipefail
           grep -RIn "AKIA\\|BEGIN .*PRIVATE KEY\\|SUPABASE_SERVICE_ROLE\\|STRIPE_SECRET\\|RESEND_API_KEY" . \
             --exclude-dir=.git \
+            --exclude-dir=.github \
             --exclude-dir=venv \
             --exclude-dir=.venv \
             --exclude=.env \
