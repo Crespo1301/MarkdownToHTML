@@ -1,0 +1,323 @@
+:root {
+  --paper: #f2f4f0;
+  --surface: #fbfcfa;
+  --ink: #17231d;
+  --muted: #526158;
+  --line: #cdd4cc;
+  --green: #176b48;
+  --deep-green: #0e5035;
+  --mint: #8fd1ad;
+  --warm: #efe9dc;
+  --sans: Arial, Helvetica, sans-serif;
+  --mono: "Courier New", Courier, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #c9cfca; }
+html[data-format="carousel"] .artboard { width: 1080px; height: 1350px; }
+html[data-format="story"] .artboard { width: 1080px; height: 1920px; }
+html[data-format="tiktok"] .artboard { width: 1080px; height: 1920px; }
+body { font-family: var(--sans); color: var(--ink); }
+.artboard, .campaign { width: 100%; height: 100%; overflow: hidden; }
+.artboard { position: relative; }
+.campaign { position: relative; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { width: 44px; height: 44px; object-fit: contain; }
+.brand span { font: 700 13px/1 var(--mono); letter-spacing: 2px; }
+figure { margin: 0; }
+figure img { display: block; width: 100%; height: 100%; object-fit: cover; }
+h1, h2, p { margin: 0; }
+
+/* The transformation */
+.campaign-one { background: var(--ink); color: var(--surface); }
+.syntax-pair { position: absolute; left: 64px; right: 64px; top: 54px; display: flex; align-items: center; gap: 24px; color: var(--mint); font: 700 23px/1 var(--mono); }
+.syntax-pair i { height: 1px; flex: 1; background: #53675c; }
+.one-copy { position: absolute; left: 64px; top: 150px; width: 620px; z-index: 2; }
+.one-copy h1 { font-size: 108px; line-height: .82; letter-spacing: -8px; }
+.one-copy h1 em { color: var(--mint); font-style: normal; }
+.one-copy p { width: 450px; margin-top: 36px; color: #bdc9c1; font-size: 25px; line-height: 1.4; }
+.one-product { position: absolute; left: 238px; top: 548px; width: 842px; height: 645px; border: 2px solid #708077; box-shadow: -20px 20px 0 var(--deep-green); }
+.one-product img { object-position: 48% top; }
+.one-brand { position: absolute; left: 64px; right: 64px; bottom: 46px; display: flex; align-items: center; justify-content: space-between; }
+.one-brand .brand img { filter: brightness(0) invert(1); }
+.one-brand strong { font: 700 18px/1 var(--mono); letter-spacing: 1px; }
+
+/* The before and after */
+.campaign-two { display: grid; grid-template-columns: 46% 54%; background: var(--surface); }
+.two-source { position: relative; padding: 58px 46px; background: var(--green); color: var(--surface); }
+.two-source .brand img { filter: brightness(0) invert(1); }
+.two-source pre { position: absolute; left: 46px; top: 210px; width: 410px; margin: 0; font: 700 21px/1.72 var(--mono); white-space: pre-wrap; color: #f4f8f5; }
+.two-source p { position: absolute; left: 46px; bottom: 60px; width: 350px; font-size: 29px; line-height: 1.1; font-weight: 700; }
+.two-result { position: relative; overflow: hidden; }
+.two-result figure { position: absolute; top: 0; right: -250px; width: 930px; height: 905px; border-bottom: 2px solid var(--ink); }
+.two-result figure img { object-position: top; }
+.two-result h2 { position: absolute; left: 48px; bottom: 150px; width: 490px; font-size: 58px; line-height: .95; letter-spacing: -3px; }
+.two-note { display: none; }
+.two-result strong { position: absolute; left: 48px; bottom: 62px; font: 700 16px/1 var(--mono); letter-spacing: .8px; }
+
+/* The code is visible */
+.campaign-three { background: var(--paper); }
+.three-title { position: absolute; left: 64px; right: 64px; top: 56px; height: 320px; display: grid; grid-template-columns: 120px 400px 1fr; align-items: end; gap: 38px; }
+.three-title > span { align-self: start; display: block; color: var(--green); font: 700 56px/1 var(--mono); }
+.three-title h1 { font-size: 72px; line-height: .88; letter-spacing: -5px; }
+.three-title p { padding-bottom: 5px; color: var(--muted); font-size: 24px; line-height: 1.42; }
+.three-product { position: absolute; left: 64px; right: 64px; top: 420px; height: 765px; border: 2px solid var(--ink); background: var(--ink); overflow: hidden; }
+.three-product img { object-position: 72% 18%; }
+.three-footer { position: absolute; left: 64px; right: 64px; bottom: 42px; display: grid; grid-template-columns: 1fr 1.2fr 1fr; align-items: center; gap: 28px; }
+.three-footer > div:nth-child(2) { display: flex; align-items: center; gap: 14px; font: 700 12px/1 var(--mono); letter-spacing: 1px; }
+.three-footer > div:nth-child(2) i { height: 1px; flex: 1; background: var(--line); }
+.three-footer > strong { text-align: right; font: 700 14px/1 var(--mono); }
+
+/* Your browser is enough */
+.campaign-four { background: var(--warm); }
+.four-copy { position: absolute; left: 64px; top: 58px; width: 500px; z-index: 3; }
+.four-copy h1 { margin-top: 145px; font-size: 76px; line-height: .88; letter-spacing: -5px; }
+.four-copy p { width: 390px; margin-top: 28px; color: var(--muted); font-size: 23px; line-height: 1.45; }
+.four-actions { display: flex; flex-direction: column; width: 390px; margin-top: 34px; border-top: 1px solid #bcb4a5; }
+.four-actions span { padding: 17px 0; border-bottom: 1px solid #bcb4a5; font: 700 14px/1 var(--mono); letter-spacing: 1px; }
+.four-copy > strong { display: block; margin-top: 38px; font: 700 17px/1 var(--mono); }
+.four-product { position: absolute; right: 58px; top: 145px; width: 450px; height: 760px; z-index: 2; border: 2px solid var(--ink); box-shadow: 18px 18px 0 var(--green); }
+.four-product img { object-fit: contain; object-position: top; background: var(--surface); }
+.four-type { position: absolute; left: 64px; right: 64px; bottom: 80px; display: flex; align-items: center; gap: 24px; padding: 34px 0; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); color: var(--ink); font: 700 25px/1 var(--mono); letter-spacing: 2px; z-index: 1; }
+.four-type i { height: 2px; flex: 1; background: var(--green); }
+
+/* The domain is the ad */
+.campaign-five { padding: 64px; background: var(--mint); }
+.five-brand { display: flex; align-items: center; justify-content: space-between; }
+.five-brand > span { font: 700 13px/1 var(--mono); letter-spacing: 1.5px; }
+.campaign-five > h1 { margin-top: 100px; white-space: nowrap; font-size: 76px; line-height: .95; letter-spacing: -5px; }
+.five-rule { height: 2px; margin-top: 48px; background: var(--ink); }
+.five-message { display: grid; grid-template-columns: 1.1fr .9fr; gap: 60px; margin-top: 36px; }
+.five-message h2 { font-size: 48px; line-height: .94; letter-spacing: -3px; }
+.five-message p { font-size: 23px; line-height: 1.45; }
+.five-product { position: absolute; left: 64px; right: 64px; top: 540px; height: 470px; overflow: hidden; border: 2px solid var(--ink); background: var(--surface); }
+.five-product img { object-position: center 12%; }
+.five-trust { position: absolute; left: 64px; right: 64px; bottom: 192px; display: flex; justify-content: space-between; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 22px 0; font: 700 13px/1 var(--mono); letter-spacing: 1px; }
+.campaign-five > a { position: absolute; left: 64px; right: 64px; bottom: 64px; display: flex; align-items: center; justify-content: space-between; padding: 25px 28px; background: var(--ink); color: var(--surface); text-decoration: none; font: 700 19px/1 var(--mono); letter-spacing: 1px; }
+.campaign-five > a span { font-size: 30px; }
+
+/* Vertical cover */
+.campaign-story { padding: 70px; background: var(--ink); color: var(--surface); }
+.story-brand { display: flex; align-items: center; justify-content: space-between; }
+.story-brand .brand img { filter: brightness(0) invert(1); }
+.story-brand > span { color: #bdc9c1; font: 700 13px/1 var(--mono); letter-spacing: 1.5px; }
+.story-symbols { display: flex; align-items: center; gap: 22px; margin-top: 150px; color: var(--mint); font: 700 25px/1 var(--mono); }
+.story-symbols i { height: 1px; flex: 1; background: #53675c; }
+.campaign-story h1 { margin-top: 55px; font-size: 116px; line-height: .82; letter-spacing: -9px; }
+.campaign-story h1 em { color: var(--mint); font-style: normal; }
+.campaign-story figure { position: absolute; left: 250px; right: -80px; top: 760px; height: 790px; border: 2px solid #708077; box-shadow: -20px 20px 0 var(--deep-green); }
+.campaign-story figure img { object-position: top; }
+.story-end { position: absolute; left: 70px; right: 70px; bottom: 70px; display: flex; align-items: flex-end; justify-content: space-between; padding-top: 30px; border-top: 1px solid #607269; }
+.story-end p { width: 400px; color: #bdc9c1; font-size: 25px; line-height: 1.35; }
+.story-end strong { font: 700 23px/1 var(--mono); }
+
+/* TikTok carousel, 9:16 with protected top, right, and bottom interface zones */
+html[data-format="tiktok"] .syntax-pair {
+  left: 90px;
+  right: 220px;
+  top: 182px;
+}
+html[data-format="tiktok"] .one-copy {
+  left: 90px;
+  top: 290px;
+  width: 690px;
+}
+html[data-format="tiktok"] .one-copy h1 {
+  font-size: 118px;
+  letter-spacing: -7px;
+}
+html[data-format="tiktok"] .one-copy p { width: 490px; margin-top: 40px; font-size: 28px; }
+html[data-format="tiktok"] .one-product {
+  left: 165px;
+  top: 950px;
+  width: 915px;
+  height: 610px;
+}
+html[data-format="tiktok"] .one-brand {
+  left: 90px;
+  right: 220px;
+  bottom: auto;
+  top: 830px;
+  justify-content: flex-start;
+  gap: 54px;
+  z-index: 3;
+}
+html[data-format="tiktok"] .one-brand strong { font-size: 16px; }
+
+html[data-format="tiktok"] .campaign-two { grid-template-columns: 43% 57%; }
+html[data-format="tiktok"] .two-source { padding: 185px 44px 150px 90px; }
+html[data-format="tiktok"] .two-source pre {
+  left: 110px;
+  top: 375px;
+  width: 300px;
+  font-size: 20px;
+  line-height: 1.82;
+}
+html[data-format="tiktok"] .two-source p {
+  left: 110px;
+  bottom: 540px;
+  width: 285px;
+  font-size: 30px;
+}
+html[data-format="tiktok"] .two-result figure {
+  right: -235px;
+  width: 930px;
+  height: 1065px;
+}
+html[data-format="tiktok"] .two-result h2 {
+  left: 48px;
+  top: 1210px;
+  bottom: auto;
+  width: 330px;
+  font-size: 62px;
+  line-height: 1.02;
+  letter-spacing: -2.7px;
+}
+html[data-format="tiktok"] .two-result .two-note {
+  display: block;
+  position: absolute;
+  left: 48px;
+  top: 1360px;
+  width: 315px;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1.3;
+}
+html[data-format="tiktok"] .two-result strong {
+  left: 48px;
+  top: 1470px;
+  bottom: auto;
+  width: 325px;
+  font-size: 15px;
+}
+
+html[data-format="tiktok"] .three-title {
+  left: 90px;
+  right: 220px;
+  top: 185px;
+  height: 330px;
+  grid-template-columns: 80px 360px 1fr;
+  gap: 24px;
+}
+html[data-format="tiktok"] .three-title > span { font-size: 44px; }
+html[data-format="tiktok"] .three-title h1 {
+  font-size: 68px;
+  letter-spacing: -4px;
+}
+html[data-format="tiktok"] .three-title p { font-size: 22px; line-height: 1.34; }
+html[data-format="tiktok"] .three-product {
+  left: 90px;
+  right: 220px;
+  top: 620px;
+  height: 710px;
+}
+html[data-format="tiktok"] .three-footer {
+  left: 90px;
+  right: 220px;
+  bottom: 455px;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+html[data-format="tiktok"] .three-footer > strong { text-align: left; }
+
+html[data-format="tiktok"] .four-copy {
+  left: 90px;
+  top: 185px;
+  width: 500px;
+}
+html[data-format="tiktok"] .four-copy h1 {
+  margin-top: 120px;
+  font-size: 76px;
+  letter-spacing: -4px;
+}
+html[data-format="tiktok"] .four-copy p { width: 370px; font-size: 23px; }
+html[data-format="tiktok"] .four-actions { width: 365px; margin-top: 34px; }
+html[data-format="tiktok"] .four-actions span { padding: 18px 0; }
+html[data-format="tiktok"] .four-product {
+  right: 55px;
+  top: 690px;
+  width: 455px;
+  height: 760px;
+}
+html[data-format="tiktok"] .four-copy > strong { font-size: 15px; }
+html[data-format="tiktok"] .four-type {
+  left: 90px;
+  right: 220px;
+  bottom: 505px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  font-size: 18px;
+}
+html[data-format="tiktok"] .four-type i { display: none; }
+html[data-format="tiktok"] .four-type span:nth-of-type(2) { text-align: center; }
+html[data-format="tiktok"] .four-type span:nth-of-type(3) { text-align: right; }
+
+html[data-format="tiktok"] .campaign-five { padding: 185px 220px 420px 90px; }
+html[data-format="tiktok"] .five-brand {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 22px;
+}
+html[data-format="tiktok"] .campaign-five > h1 {
+  margin-top: 95px;
+  width: 770px;
+  font-size: 59px;
+  letter-spacing: -3px;
+}
+html[data-format="tiktok"] .five-rule { width: 770px; margin-top: 46px; }
+html[data-format="tiktok"] .five-message {
+  grid-template-columns: 1fr;
+  gap: 26px;
+  width: 710px;
+  margin-top: 42px;
+}
+html[data-format="tiktok"] .five-message h2 { font-size: 50px; }
+html[data-format="tiktok"] .five-message p { font-size: 24px; }
+html[data-format="tiktok"] .five-product {
+  left: 90px;
+  right: 220px;
+  top: 830px;
+  height: 465px;
+}
+html[data-format="tiktok"] .five-trust {
+  left: 90px;
+  right: 220px;
+  bottom: 535px;
+  flex-wrap: wrap;
+  gap: 18px 30px;
+  justify-content: flex-start;
+  background: var(--mint);
+}
+html[data-format="tiktok"] .campaign-five > a {
+  left: 90px;
+  right: 220px;
+  bottom: 420px;
+  padding: 22px 24px;
+  font-size: 17px;
+}
+
+html[data-safe="1"] .artboard::after {
+  content: "";
+  position: absolute;
+  left: 90px;
+  right: 220px;
+  top: 180px;
+  bottom: 420px;
+  border: 3px solid #ff4b2d;
+  pointer-events: none;
+  z-index: 20;
+}
+
+html[data-safe="1"] .artboard::before {
+  content: "TIKTOK SAFE CONTENT FRAME";
+  position: absolute;
+  left: 90px;
+  top: 140px;
+  z-index: 21;
+  padding: 8px 12px;
+  background: #ff4b2d;
+  color: #fff;
+  font: 700 20px/1 var(--mono);
+  letter-spacing: 1px;
+}

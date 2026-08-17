@@ -90,3 +90,8 @@ output/*.html
 
 # Local browser QA screenshots
 .visual-checks/
+
+# Generated launch-campaign exports
+marketing/social/markdown-to-html-launch/exports/
+marketing/social/markdown-to-html-launch/markdown-to-html-launch-campaign/
+marketing/social/markdown-to-html-launch/*.zip

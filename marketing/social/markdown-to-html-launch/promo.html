@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MarkdownToHTML CSolutions Campaign</title>
+    <link rel="stylesheet" href="./promo.css">
+  </head>
+  <body>
+    <main id="artboard" class="artboard" aria-label="MarkdownToHTML promotional artwork"></main>
+
+    <template id="brand">
+      <div class="brand">
+        <img src="./assets/csolutions-mark.png" alt="">
+        <span>CSOLUTIONS</span>
+      </div>
+    </template>
+
+    <script>
+      const artboard = document.querySelector("#artboard");
+      const brand = () => document.querySelector("#brand").innerHTML;
+      const params = new URLSearchParams(window.location.search);
+      const slide = params.get("slide") || "1";
+      const format = params.get("format");
+      const safe = params.get("safe");
+
+      const slides = {
+        "1": `
+          <section class="campaign campaign-one">
+            <div class="syntax-pair" aria-hidden="true">
+              <span>#</span><i></i><span>&lt;h1&gt;</span>
+            </div>
+            <div class="one-copy">
+              <h1>Markdown<br>becomes<br><em>HTML.</em></h1>
+              <p>See the result before you take the code.</p>
+            </div>
+            <figure class="one-product">
+              <img src="./assets/02-live-preview.png" alt="Markdown input displayed beside its rendered HTML preview">
+            </figure>
+            <div class="one-brand">${brand()}<strong>mdtohtmlconverter.com</strong></div>
+          </section>
+        `,
+        "2": `
+          <section class="campaign campaign-two">
+            <div class="two-source">
+              <div class="two-brand">${brand()}</div>
+              <pre># Publish-ready Markdown
+
+Turn **Markdown** into clean
+HTML for a website, blog,
+or CMS.
+
+## What you can do
+
+- Preview the result
+- Inspect the source
+- Download the document</pre>
+              <p>Write it the way you already do.</p>
+            </div>
+            <div class="two-result">
+              <figure>
+                <img src="./assets/02-live-preview.png" alt="Rendered Markdown preview in the converter">
+              </figure>
+              <h2>Preview first.</h2>
+              <p class="two-note">Check the page before you copy the HTML.</p>
+              <strong>mdtohtmlconverter.com</strong>
+            </div>
+          </section>
+        `,
+        "3": `
+          <section class="campaign campaign-three">
+            <div class="three-title">
+              <span>&lt;/&gt;</span>
+              <h1>The source<br>isn’t hidden.</h1>
+              <p>Inspect the generated HTML, copy it, or download a complete document.</p>
+            </div>
+            <figure class="three-product">
+              <img src="./assets/03-html-source.png" alt="Markdown input beside generated HTML source">
+            </figure>
+            <div class="three-footer">
+              ${brand()}
+              <div><span>PREVIEW</span><i></i><span>HTML SOURCE</span></div>
+              <strong>mdtohtmlconverter.com</strong>
+            </div>
+          </section>
+        `,
+        "4": `
+          <section class="campaign campaign-four">
+            <div class="four-copy">
+              ${brand()}
+              <h1>Your browser<br>is enough.</h1>
+              <p>Convert from your phone when the work moves away from your desk.</p>
+            <div class="four-actions">
+              <span>COPY HTML</span>
+              <span>DOWNLOAD</span>
+              <span>RECOVER DRAFTS</span>
+            </div>
+              <strong>mdtohtmlconverter.com</strong>
+            </div>
+            <figure class="four-product">
+              <img src="./assets/04-mobile-workflow.png" alt="MarkdownToHTML mobile browser interface">
+            </figure>
+            <div class="four-type" aria-hidden="true">
+              <span>WRITE</span><i></i><span>PREVIEW</span><i></i><span>EXPORT</span>
+            </div>
+          </section>
+        `,
+        "5": `
+          <section class="campaign campaign-five">
+            <div class="five-brand">${brand()}<span>A FREE, OPEN-SOURCE WEB TOOL</span></div>
+            <h1>mdtohtmlconverter.com</h1>
+            <div class="five-rule"></div>
+            <div class="five-message">
+              <h2>Free to use.<br>No sign-in required.</h2>
+              <p>Paste Markdown. Preview the result. Take the HTML.</p>
+            </div>
+            <figure class="five-product">
+              <img src="./assets/01-converter-overview.png" alt="MarkdownToHTML converter shown on desktop and mobile">
+            </figure>
+            <div class="five-trust">
+              <span>SANDBOXED PREVIEW</span>
+              <span>UNSAFE LINKS REJECTED</span>
+              <span>OPEN SOURCE</span>
+            </div>
+            <a href="https://mdtohtmlconverter.com">OPEN THE CONVERTER <span>→</span></a>
+          </section>
+        `,
+        "story": `
+          <section class="campaign campaign-story">
+            <div class="story-brand">${brand()}<span>FREE · NO SIGN-IN</span></div>
+            <div class="story-symbols" aria-hidden="true"><span>#</span><i></i><span>&lt;/&gt;</span></div>
+            <h1>Markdown<br>becomes<br><em>HTML.</em></h1>
+            <figure>
+              <img src="./assets/02-live-preview.png" alt="Markdown input beside its rendered HTML preview">
+            </figure>
+            <div class="story-end">
+              <p>Preview it. Inspect it. Take it with you.</p>
+              <strong>mdtohtmlconverter.com</strong>
+            </div>
+          </section>
+        `
+      };
+
+      artboard.innerHTML = slides[slide] || slides["1"];
+      document.documentElement.dataset.format =
+        format === "tiktok" ? "tiktok" : slide === "story" ? "story" : "carousel";
+      if (safe === "1") {
+        document.documentElement.dataset.safe = "1";
+      }
+    </script>
+  </body>
+</html>

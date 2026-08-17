@@ -2,6 +2,15 @@
 
 All notable changes follow semantic versioning.
 
+## [Unreleased]
+
+### Privacy
+
+- Aligned the public Privacy page with the current AdSense review state: ads
+  remain disabled, no CMP or analytics is configured in this release, and the
+  page now identifies the future consent and provider-disclosure work required
+  before monetization is enabled.
+
 ## [2.2.0] - 2026-07-29
 
 ### Content

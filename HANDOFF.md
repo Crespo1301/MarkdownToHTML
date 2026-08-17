@@ -10,6 +10,14 @@
 - Existing Vercel project: `markdown-to-html`
 - Existing production alias: `https://markdown-to-html-iota.vercel.app`
 
+## Unreleased local maintenance (2026-08-12)
+
+- Aligned `templates/privacy.html` with `ADSENSE.md`: verification code remains
+  present for review, visible ads remain disabled, and no CMP or analytics is
+  claimed until actually configured.
+- The launch campaign remains local and untracked under `marketing/`; review
+  and commit it separately before distribution.
+
 ## AdSense status (2026-07-29)
 
 - Google Search Console domain property is verified (confirmed by Carlos).
