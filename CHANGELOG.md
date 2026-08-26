@@ -4,6 +4,13 @@ All notable changes follow semantic versioning.
 
 ## [Unreleased]
 
+### Fixed
+
+- Bumped `md2html.__version__` to `2.2.0` so the package attribute and
+  `md2html --version` output match `pyproject.toml` and the documented
+  v2.2.0 release. Added `tests/test_version.py` to guard against future
+  drift between the package version, `pyproject.toml`, and the CLI.
+
 ### Privacy
 
 - Aligned the public Privacy page with the current AdSense review state: ads
