@@ -10,7 +10,13 @@
 - Existing Vercel project: `markdown-to-html`
 - Existing production alias: `https://markdown-to-html-iota.vercel.app`
 
-## Unreleased local maintenance (2026-08-12)
+## Post-tag local maintenance (2026-09-02)
+
+- The runtime package and CLI now report `2.2.0`, matching `pyproject.toml`,
+  README, CHANGELOG, and the documented release. Commit `2d2e91e` added the
+  alignment and regression tests; no new release tag was created.
+- `MASTER_RULES_AI.md` is now tracked as the repo-specific writing and workflow
+  policy. The 2026-09-01 rule commits are documentation-only.
 
 - Aligned `templates/privacy.html` with `ADSENSE.md`: verification code remains
   present for review, visible ads remain disabled, and no CMP or analytics is
